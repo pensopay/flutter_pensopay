@@ -1,0 +1,27 @@
+name: flutter_pensopay
+description: Flutter library for PensoPay.
+version: 0.0.1
+homepage: https://github.com/pensopay/flutter_pensopay
+repository: https://github.com/pensopay/flutter_pensopay
+
+environment:
+  sdk: ">=2.17.1 <3.0.0"
+  flutter: ">=2.5.0"
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        default_package: pensopay_android
+      ios:
+        default_package: pensopay_ios
+
+dependencies:
+  flutter:
+    sdk: flutter
+  stripe_android: ^0.0.1
+  stripe_ios: ^0.0.1
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0

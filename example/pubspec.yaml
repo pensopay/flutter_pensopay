@@ -1,0 +1,36 @@
+name: pensopay_example
+description: Demonstrates how to use the PensoPay plugin.
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.17.1 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+  flutter_pensopay: ^0.0.1
+  http: ^0.13.1
+
+dev_dependencies:
+  integration_test:
+    sdk: flutter
+  flutter_driver:
+    sdk: flutter
+  test: any
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+dependency_overrides:
+  flutter_pensopay:
+    path: ../packages/pensopay
+  pensopay_android:
+    path: ../packages/pensopay_android
+  pensopay_ios:
+    path: ../packages/pensopay_ios
+
+flutter:
+  uses-material-design: true
