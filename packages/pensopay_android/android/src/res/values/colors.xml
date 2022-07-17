@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="pensopay_listitem_textcolor">#000000</color>
+
+    <color name="pensopay_listitem_borderColor">#AAAAAA</color>
+    <color name="pensopay_listitem_borderColor_selected">#DCE6FF</color>
+
+    <color name="pensopay_listitem_backgroundColor">#00000000</color>
+    <color name="pensopay_listitem_backgroundColor_selected">#DCE6FF</color>
+
+</resources>

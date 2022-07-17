@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <attr name="pensopay_listitem_textColor" format="reference"  />
+
+    <attr name="pensopay_listitem_backgroundColor" format="reference"/>
+    <attr name="pensopay_listitem_backgroundColor_selected" format="reference"/>
+
+    <attr name="pensopay_listitem_borderColor" format="reference"/>
+    <attr name="pensopay_listitem_borderColor_selected" format="reference"/>
+
+</resources>

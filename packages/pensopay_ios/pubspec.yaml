@@ -1,7 +1,8 @@
 name: pensopay_ios
 description: A new Flutter plugin project.
 version: 0.0.1
-homepage:
+homepage: https://github.com/pensopay/flutter_pensopay
+repository: https://github.com/pensopay/flutter_pensopay
 
 environment:
   sdk: ">=2.17.1 <3.0.0"

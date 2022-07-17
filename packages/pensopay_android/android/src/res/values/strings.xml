@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">PensoPay SDK</string>
+
+    <!-- Strings used in the shop -->
+    <string name="tshirt_count">T-Shirt x %1$s</string>
+    <string name="football_count">Football x %1$s</string>
+    <string name="total_dkk">%1$s DKK</string>
+
+</resources>

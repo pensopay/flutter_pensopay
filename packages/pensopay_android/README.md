@@ -1,4 +1,4 @@
-# pensopay_android
+# pensopay
 
 A new Flutter plugin project.
 
