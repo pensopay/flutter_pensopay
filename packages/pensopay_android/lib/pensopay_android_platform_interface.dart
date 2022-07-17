@@ -14,7 +14,7 @@ abstract class PensopayAndroidPlatform extends PlatformInterface {
   ///
   /// Defaults to [MethodChannelPensopayAndroid].
   static PensopayAndroidPlatform get instance => _instance;
-  
+
   /// Platform-specific implementations should set this with their own
   /// platform-specific class that extends [PensopayAndroidPlatform] when
   /// they register themselves.

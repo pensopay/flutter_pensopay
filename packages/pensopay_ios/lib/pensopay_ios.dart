@@ -1,4 +1,3 @@
-
 import 'pensopay_ios_platform_interface.dart';
 
 class PensopayIos {

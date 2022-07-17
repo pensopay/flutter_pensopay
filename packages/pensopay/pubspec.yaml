@@ -19,8 +19,8 @@ flutter:
 dependencies:
   flutter:
     sdk: flutter
-  stripe_android: ^0.0.1
-  stripe_ios: ^0.0.1
+  pensopay_android: ^0.0.1
+  pensopay_ios: ^0.0.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
