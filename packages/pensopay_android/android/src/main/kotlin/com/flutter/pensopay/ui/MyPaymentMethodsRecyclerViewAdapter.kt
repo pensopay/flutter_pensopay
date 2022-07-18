@@ -10,14 +10,14 @@ import android.widget.LinearLayout
 import android.widget.TextView
 
 import kotlinx.android.synthetic.main.fragment_paymentmethods.view.*
-import com.flutter.pensopay.PaymentMethod
+import com.flutter.pensopay.PaymentMethods
 import com.flutter.pensopay.R
 
-class MyPaymentMethodsRecyclerViewAdapter(
+class MyPaymentMethodssRecyclerViewAdapter(
     private val mValues: List<PaymentContent.PaymentItem>,
-    private val mListener: PaymentMethodsFragment.OnPaymentMethodsListFragmentInteractionListener?,
+    private val mListener: PaymentMethodssFragment.OnPaymentMethodssListFragmentInteractionListener?,
     private val recyclerView: androidx.recyclerview.widget.RecyclerView
-) : androidx.recyclerview.widget.RecyclerView.Adapter<MyPaymentMethodsRecyclerViewAdapter.ViewHolder>() {
+) : androidx.recyclerview.widget.RecyclerView.Adapter<MyPaymentMethodssRecyclerViewAdapter.ViewHolder>() {
 
     private val mOnClickListener: View.OnClickListener
 
@@ -34,14 +34,14 @@ class MyPaymentMethodsRecyclerViewAdapter(
             val item = v.tag as PaymentContent.PaymentItem
             // Notify the active callbacks interface (the activity, if the fragment is attached to
             // one) that an item has been selected.
-            mListener?.onPaymentMethodSelected(item.method)
+            mListener?.onPaymentMethodsSelected(item.method)
         }
 
 
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (mValues[position].method == PaymentMethod.PAYMENTCARD) {
+        return if (mValues[position].method == PaymentMethods.PAYMENTCARD) {
             0
         } else {
             1

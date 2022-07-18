@@ -1,6 +1,7 @@
 package com.flutter.pensopay.networking.pensopayapi
 
 import com.android.volley.Response
+import com.flutter.pensopay.PensoPay
 import com.google.gson.Gson
 import com.flutter.pensopay.networking.NetworkUtility
 import com.flutter.pensopay.networking.ObjectRequest
@@ -11,12 +12,12 @@ import kotlin.collections.HashMap
 /**
  * The PPRequest is a utility class that bridges the gap between PensoPay domain code and the general purpose networking code
  */
-open class PPrequest<T>(private val method: Int, private val path: String, protected val params: JSONObject?, private val clazz: Class<T>) {
+open class PPrequest<T>(private val method: Int, private val path: String, private val params: JSONObject?, private val clazz: Class<T>) {
 
     // Static
 
     companion object {
-        protected const val pensopayapiBaseUrl = "https://api.pensopay.com"
+        protected const val apiBaseUrl = "https://stress-api.pensopay.dev/v1"
     }
 
 
@@ -26,8 +27,8 @@ open class PPrequest<T>(private val method: Int, private val path: String, prote
         val ppHeaders = PPHeaders()
 
         val headers = HashMap<String, String>()
-        headers["Authorization"] = ppHeaders.encodedAuthorization()
-        headers["Accept-Version"] = ppHeaders.acceptVersion
+        headers["Authorization"] = ppHeaders.setToken()
+//        headers["Accept-Version"] = ppHeaders.acceptVersion
         headers["Content-Type"] = "application/json"
         headers["Accept"] = "application/json"
 
@@ -35,7 +36,7 @@ open class PPrequest<T>(private val method: Int, private val path: String, prote
     }
 
     fun sendRequest(listener: (T) -> Unit, errorListener: ((statusCode: Int?, message: String?, ppError: PPError?) -> Unit)?) {
-        val request = ObjectRequest<T>(method, "$pensopayapiBaseUrl$path", params, clazz, Response.Listener {
+        val request = ObjectRequest<T>(method, "$apiBaseUrl$path", params, clazz, Response.Listener {
             listener.invoke(it)
         }, Response.ErrorListener {
             val message: String? = try {
@@ -61,6 +62,7 @@ open class PPrequest<T>(private val method: Int, private val path: String, prote
         PensoPay.log("Method: ${request.method}")
         PensoPay.log("Url: ${request.url}")
         PensoPay.log("Headers: ${request.headers}")
+        PensoPay.log("Params: ${params?.length()}")
 
         NetworkUtility.getInstance().addNetworkRequest(request)
     }

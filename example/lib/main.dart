@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pensopay/flutter_pensopay.dart';
+import 'dart:math';
 
 void main() {
-  Pensopay.init(apiKey: "Some_api_key");
   runApp(const MyApp());
+  Pensopay.init(apiKey: "17c3236315ec4df3d236895330f314fd00110bde4b01f368ec1e059e176957f0");
 }
 
 class MyApp extends StatelessWidget {
@@ -53,14 +54,9 @@ class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
   void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+    Random random = new Random();
+    int randomNumber = random.nextInt(10000)+1000;
+    Pensopay.makePayment(currency: "DKK", orderId: "first-" + randomNumber.toString(), amount: 500, facilitator: "quickpay");
   }
 
   @override

@@ -8,17 +8,17 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.flutter.pensopay.PaymentMethod
+import com.flutter.pensopay.PaymentMethods
 import com.flutter.pensopay.R
 
 /**
  * A fragment representing a list of Items.
  * Activities containing this fragment MUST implement the
- * [PaymentMethodsFragment.OnPaymentMethodsListFragmentInteractionListener] interface.
+ * [PaymentMethodssFragment.OnPaymentMethodssListFragmentInteractionListener] interface.
  */
-class PaymentMethodsFragment : androidx.fragment.app.Fragment() {
+class PaymentMethodssFragment : androidx.fragment.app.Fragment() {
 
-    private var listener: OnPaymentMethodsListFragmentInteractionListener? = null
+    private var listener: OnPaymentMethodssListFragmentInteractionListener? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_paymentmethods_list, container, false)
@@ -27,7 +27,7 @@ class PaymentMethodsFragment : androidx.fragment.app.Fragment() {
         if (view is androidx.recyclerview.widget.RecyclerView) {
             with(view) {
                 layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
-                adapter = MyPaymentMethodsRecyclerViewAdapter(PaymentContent.ITEMS, listener, view)
+                adapter = MyPaymentMethodssRecyclerViewAdapter(PaymentContent.ITEMS, listener, view)
 
                 addItemDecoration(MarginItemDecoration(15))
             }
@@ -38,11 +38,11 @@ class PaymentMethodsFragment : androidx.fragment.app.Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
-        if (context is OnPaymentMethodsListFragmentInteractionListener) {
+        if (context is OnPaymentMethodssListFragmentInteractionListener) {
             listener = context
         }
         else {
-            throw RuntimeException("$context must implement OnPaymentMethodsListFragmentInteractionListener")
+            throw RuntimeException("$context must implement OnPaymentMethodssListFragmentInteractionListener")
         }
     }
 
@@ -57,7 +57,7 @@ class PaymentMethodsFragment : androidx.fragment.app.Fragment() {
      * to the activity and potentially other fragments contained in that
      * activity.
      */
-    interface OnPaymentMethodsListFragmentInteractionListener {
-        fun onPaymentMethodSelected(paymentMethod: PaymentMethod)
+    interface OnPaymentMethodssListFragmentInteractionListener {
+        fun onPaymentMethodsSelected(paymentMethod: PaymentMethods)
     }
 }

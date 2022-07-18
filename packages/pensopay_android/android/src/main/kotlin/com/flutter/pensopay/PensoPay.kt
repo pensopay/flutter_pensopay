@@ -5,8 +5,7 @@ import android.util.Log
 import com.flutter.pensopay.networking.NetworkUtility
 import java.lang.RuntimeException
 
-
-public class PensoPay(internal var apiKey: String) {
+class PensoPay(internal var apiKey: String) {
 
     // Singleton
 

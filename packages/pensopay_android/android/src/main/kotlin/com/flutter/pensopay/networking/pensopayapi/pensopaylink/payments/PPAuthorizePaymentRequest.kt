@@ -5,7 +5,7 @@ import com.flutter.pensopay.networking.pensopayapi.PPrequest
 import com.flutter.pensopay.networking.pensopayapi.pensopaylink.models.*
 import org.json.JSONObject
 
-class PPAuthorizePaymentRequest(params: PPAuthorizePaymentParams): PPrequest<PPPayment>(Request.Method.POST, "/payments/${params.id}/authorize", params, PPPayment::class.java) {}
+class PPAuthorizePaymentRequest(params: PPAuthorizePaymentParams): PPrequest<PPPayment>(Request.Method.POST, "/payment/${params.id}/authorize", params, PPPayment::class.java) {}
 
 
 class PPAuthorizePaymentParams(id: Int, amount: Int): JSONObject() {

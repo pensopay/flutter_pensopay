@@ -1,6 +1,6 @@
 package com.flutter.pensopay
 
-enum class PaymentMethod(val id: String) {
+enum class PaymentMethods(val id: String) {
 
 //    MOBILEPAY("PaymentMobilePay"),
     PAYMENTCARD("PaymentCard");

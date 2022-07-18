@@ -8,14 +8,16 @@ import com.flutter.pensopay.networking.pensopayapi.pensopaylink.models.PPPayment
 import com.flutter.pensopay.networking.pensopayapi.pensopaylink.models.PPShipping
 import org.json.JSONObject
 
-class PPCreatePaymentRequest(params: PPCreatePaymentParameters): PPrequest<PPPayment>(Request.Method.POST, "/payments", params, PPPayment::class.java)
+class PPCreatePaymentRequest(params: PPCreatePaymentParameters): PPrequest<PPPayment>(Request.Method.POST, "/payment", params, PPPayment::class.java)
 
-class PPCreatePaymentParameters(currency: String, order_id: String): JSONObject() {
+class PPCreatePaymentParameters(amount: Double, currency: String, orderId: String, facilitator: String): JSONObject() {
 
     // Required Properties
 
+    var amount: Double = amount
     var currency: String = currency
-    var order_id: String = order_id
+    var order_id: String = orderId
+    var facilitator: String = facilitator
 
 
     // Optional Properties
