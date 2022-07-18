@@ -58,7 +58,7 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?): Boolean {
-        if (requestCode == PensoPayActivity.QUICKPAY_INTENT_CODE) {
+        if (requestCode == PensoPayActivity.PENSOPAY_INTENT_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 val returnedResult = intent?.data?.toString() ?: ""
 
@@ -129,29 +129,12 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
         try {
             createPaymentRequest.sendRequest(
                 listener = { payment ->
+                    currentPaymentId = payment.id
+
                     val link = PPPaymentLink()
                     link.url = payment.link!!
 
                     PensoPayActivity.openPensoPayPaymentWindow(activity, link)
-
-                    PensoPay.log(payment.toString())
-                    PensoPay.log(payment.id.toString())
-
-//                    currentPaymentId = payment.id
-//
-//                    val createPaymentLinkParameters = PPCreatePaymentLinkParameters(payment.id, amount).apply {
-//                        autocapture = autoCapture
-//                    }
-//                    val createPaymentLinkRequest = PPCreatePaymentLinkRequest(createPaymentLinkParameters)
-//
-//                    createPaymentLinkRequest.sendRequest(
-//                        listener = { paymentLink ->
-//                            PensoPayActivity.openPensoPayPaymentWindow(activity, paymentLink)
-//                        },
-//                        errorListener = { _, message, error ->
-//                            pendingResult?.error(CREATE_PAYMENT_LINK_ERROR, message, error?.message)
-//                        }
-//                    )
                 },
                 errorListener = { _, message, error ->
                     PensoPay.log(message.toString())

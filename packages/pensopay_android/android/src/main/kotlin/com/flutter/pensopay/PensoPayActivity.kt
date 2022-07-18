@@ -41,7 +41,7 @@ class PensoPayActivity : AppCompatActivity() {
         const val SUCCESS_RESULT = "Success"
         const val FAILURE_RESULT = "Failure"
         private const val urlPropertyName = "pensopaylink"
-        const val QUICKPAY_INTENT_CODE = 1318
+        const val PENSOPAY_INTENT_CODE = 1318
 
         /**
          * Opens a view that allows you to enter payment information.
@@ -66,7 +66,7 @@ class PensoPayActivity : AppCompatActivity() {
         private fun openPensoPayPaymentWindow(a: Activity, URL: String) {
             val intent = Intent(a, PensoPayActivity::class.java)
             intent.putExtra(urlPropertyName, URL)
-            a.startActivityForResult(intent, QUICKPAY_INTENT_CODE)
+            a.startActivityForResult(intent, PENSOPAY_INTENT_CODE)
         }
     }
 }

@@ -8,7 +8,7 @@ import org.json.JSONObject
 
 import com.flutter.pensopay.PensoPayActivity
 
-class PPCreatePaymentLinkRequest(params: PPCreatePaymentLinkParameters): PPrequest<PPPaymentLink>(Request.Method.PUT, "/payment/${params.id}/link", params, PPPaymentLink::class.java) {
+class PPCreatePaymentLinkRequest(params: PPCreatePaymentLinkParameters): PPrequest<PPPaymentLink>(Request.Method.GET, "/payment/${params.id}", params, PPPaymentLink::class.java) {
 
     init {
         params.cancel_url = PensoPayActivity.FAILURE_URL

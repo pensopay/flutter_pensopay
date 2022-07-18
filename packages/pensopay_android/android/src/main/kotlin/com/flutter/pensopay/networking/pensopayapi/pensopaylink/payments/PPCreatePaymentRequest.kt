@@ -1,6 +1,7 @@
 package com.flutter.pensopay.networking.pensopayapi.pensopaylink.payments
 
 import com.android.volley.Request
+import com.flutter.pensopay.PensoPayActivity
 import com.flutter.pensopay.networking.pensopayapi.PPrequest
 import com.flutter.pensopay.networking.pensopayapi.pensopaylink.models.PPAddress
 import com.flutter.pensopay.networking.pensopayapi.pensopaylink.models.PPBasket
@@ -18,6 +19,9 @@ class PPCreatePaymentParameters(amount: Double, currency: String, orderId: Strin
     var currency: String = currency
     var order_id: String = orderId
     var facilitator: String = facilitator
+
+    var success_url = PensoPayActivity.SUCCESS_URL
+    var cancel_url = PensoPayActivity.FAILURE_URL
 
 
     // Optional Properties

@@ -18,7 +18,7 @@ class PPAuthorizePaymentParams(id: Int, amount: Int): JSONObject() {
 
     // Optional Properties
 
-    var quickPayCallbackUrl: String? = null // TODO: Must be encoded/decoded into 'PensoPay-Callback-Url'
+    var pensopayCallbackUrl: String? = null // TODO: Must be encoded/decoded into 'PensoPay-Callback-Url'
     var synchronized: Boolean? = null
     var vat_rate: Double? = null
     var mobile_number: String? = null

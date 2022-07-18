@@ -56,7 +56,32 @@ class _MyHomePageState extends State<MyHomePage> {
   void _incrementCounter() {
     Random random = new Random();
     int randomNumber = random.nextInt(10000)+1000;
-    Pensopay.makePayment(currency: "DKK", orderId: "first-" + randomNumber.toString(), amount: 500, facilitator: "quickpay");
+
+    try {
+      Pensopay.makePayment(
+        currency: 'DKK',
+        orderId: "first-" + randomNumber.toString(),
+        amount: 500,
+        facilitator: 'quickpay',
+      ).then((payment) {
+        print("SUCCESS");
+        print(payment.id);
+        print(payment.toString());
+      });
+    } catch (error) {
+      print("ERROR");
+    }
+
+    // Pensopay.makePayment(currency: "DKK", orderId: "first-" + randomNumber.toString(), amount: 500, facilitator: "quickpay").then((payment) {
+    //
+    //   print(payment.toString());
+    //
+    //   if (payment.accepted) {
+    //     print("YAY");
+    //     print(payment.id.toString());
+    //     // The payment has been authorized 👍
+    //   }
+    // });
   }
 
   @override
