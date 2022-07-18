@@ -5,6 +5,7 @@ import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.Volley
 
+
 // Singleton class, to access an instance of Volley to send http requests.
 class NetworkUtility private constructor(context: Context) {
     private val requestQueue: RequestQueue

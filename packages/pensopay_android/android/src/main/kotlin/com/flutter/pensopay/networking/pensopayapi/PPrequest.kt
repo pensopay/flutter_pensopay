@@ -23,18 +23,18 @@ open class PPrequest<T>(private val method: Int, private val path: String, prote
     // Util
 
     private fun createHeaders() : Map<String, String> {
-        val qpHeaders = PPHeaders()
+        val ppHeaders = PPHeaders()
 
         val headers = HashMap<String, String>()
-        headers["Authorization"] = qpHeaders.encodedAuthorization()
-        headers["Accept-Version"] = qpHeaders.acceptVersion
+        headers["Authorization"] = ppHeaders.encodedAuthorization()
+        headers["Accept-Version"] = ppHeaders.acceptVersion
         headers["Content-Type"] = "application/json"
         headers["Accept"] = "application/json"
 
         return headers
     }
 
-    fun sendRequest(listener: (T) -> Unit, errorListener: ((statusCode: Int?, message: String?, qpError: PPError?) -> Unit)?) {
+    fun sendRequest(listener: (T) -> Unit, errorListener: ((statusCode: Int?, message: String?, ppError: PPError?) -> Unit)?) {
         val request = ObjectRequest<T>(method, "$pensopayapiBaseUrl$path", params, clazz, Response.Listener {
             listener.invoke(it)
         }, Response.ErrorListener {
@@ -44,14 +44,14 @@ open class PPrequest<T>(private val method: Int, private val path: String, prote
                 it.message
             }
 
-            val qpError: PPError? = try {
+            val ppError: PPError? = try {
                 Gson().fromJson(message, PPError::class.java)
             }
             catch (e: Exception) {
                 null
             }
 
-            errorListener?.invoke(it.networkResponse?.statusCode, it.message, qpError)
+            errorListener?.invoke(it.networkResponse?.statusCode, it.message, ppError)
         })
 
         request.headers = createHeaders()

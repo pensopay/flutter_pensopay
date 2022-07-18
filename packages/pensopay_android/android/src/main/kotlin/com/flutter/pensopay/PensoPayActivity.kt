@@ -15,7 +15,7 @@ class PensoPayActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val requestedUrl = intent.getStringExtra(urlPropertyName)
-        setContentView(R.layout.activity_quick_pay)
+        setContentView(R.layout.activity_pensopay)
 
         val webView = findViewById<WebView>(R.id.pensopay_webview)
         if (webView != null) {
@@ -31,7 +31,7 @@ class PensoPayActivity : AppCompatActivity() {
                 this.finish()
             });
 
-            webView.loadUrl(requestedUrl)
+            webView.loadUrl(requestedUrl!!)
         }
     }
 

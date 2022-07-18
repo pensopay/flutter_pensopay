@@ -11,6 +11,8 @@ import com.google.gson.Gson
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import java.io.UnsupportedEncodingException
+import java.util.*
 
 class ObjectRequest<T>(
     method: Int, url: String, params: JSONObject?, clazz: java.lang.Class<*>,
@@ -37,11 +39,11 @@ class ObjectRequest<T>(
             null
         }
 
-    protected fun deliverResponse(response: T) {
+    protected override fun deliverResponse(response: T) {
         listener.onResponse(response)
     }
 
-    protected fun parseNetworkResponse(response: NetworkResponse): Response {
+    protected override fun parseNetworkResponse(response: NetworkResponse): Response {
         return try {
             val json = String(response.data, HttpHeaderParser.parseCharset(response.headers))
             if (clazz.getName() == JSONObject::class.java.getName()) {
@@ -65,7 +67,7 @@ class ObjectRequest<T>(
                 )
             }
         } catch (e: UnsupportedEncodingException) {
-            Log.e(TAG, Objects.requireNonNull(e.message))
+            Log.e(TAG, Objects.requireNonNull(e.message).toString())
             Response.error(ParseError(e))
         }
     }

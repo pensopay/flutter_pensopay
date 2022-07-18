@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_pensopay/flutter_pensopay.dart';
 
 void main() {
+  Pensopay.init(apiKey: "Some_api_key");
   runApp(const MyApp());
 }
 

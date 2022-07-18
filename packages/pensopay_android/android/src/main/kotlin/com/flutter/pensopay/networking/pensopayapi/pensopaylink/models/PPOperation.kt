@@ -14,8 +14,8 @@ class PPOperation(id: Int): JSONObject() {
     var type: String? = null
     var amount: Int? = null
     var pending: Boolean? = null
-    var qp_status_code: String? = null
-    var qp_status_msg: String? = null
+    var pp_status_code: String? = null
+    var pp_status_msg: String? = null
     var aq_status_msg: String? = null
     var aqStatusMsg: String? = null
     var data: Map<String, String>? = null
