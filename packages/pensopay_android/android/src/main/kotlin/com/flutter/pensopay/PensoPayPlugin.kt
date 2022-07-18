@@ -67,13 +67,13 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
                         val getPaymentRequest = PPGetPaymentRequest(currentPaymentId!!)
 
                         getPaymentRequest.sendRequest(
-                            listener = { payment ->
-                                pendingResult?.success(convertQPPaymentToMap(payment))
-                                currentPaymentId = null
-                            },
-                            errorListener = { _, message, error ->
-                                pendingResult?.error(PAYMENT_FAILURE_ERROR, message, error?.message)
-                            }
+                                listener = { payment ->
+                                    pendingResult?.success(convertQPPaymentToMap(payment))
+                                    currentPaymentId = null
+                                },
+                                errorListener = { _, message, error ->
+                                    pendingResult?.error(PAYMENT_FAILURE_ERROR, message, error?.message)
+                                }
                         )
                     }
                 } else if (returnedResult == PensoPayActivity.FAILURE_RESULT) {
@@ -102,7 +102,7 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
                 val orderId = call.argument<String>("order_id")!!
                 val amount = call.argument<Double>("amount")!!
                 val facilitator = call.argument<String>("facilitator")!!
-                val autoCapture = call.argument<Int>("auto-capture")
+                val autoCapture = call.argument<Boolean>("autocapture")
                 makePayment(currency, orderId, amount, facilitator, autoCapture)
             }
             else -> result.notImplemented()
@@ -117,8 +117,8 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
         PensoPay.init(apiKey, context)
     }
 
-    private fun makePayment(currency: String, orderId: String, amount: Double, facilitator: String, autoCapture: Int?) {
-        val createPaymentParams = PPCreatePaymentParameters(amount, currency, orderId, facilitator)
+    private fun makePayment(currency: String, orderId: String, amount: Double, facilitator: String, autocapture: Boolean?) {
+        val createPaymentParams = PPCreatePaymentParameters(amount, currency, orderId, facilitator, autocapture as Boolean)
         val createPaymentRequest = PPCreatePaymentRequest(createPaymentParams)
 
         PensoPay.log(amount.toString())
@@ -128,19 +128,19 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
 
         try {
             createPaymentRequest.sendRequest(
-                listener = { payment ->
-                    currentPaymentId = payment.id
+                    listener = { payment ->
+                        currentPaymentId = payment.id
 
-                    val link = PPPaymentLink()
-                    link.url = payment.link!!
+                        val link = PPPaymentLink()
+                        link.url = payment.link!!
 
-                    PensoPayActivity.openPensoPayPaymentWindow(activity, link)
-                },
-                errorListener = { _, message, error ->
-                    PensoPay.log(message.toString())
-                    PensoPay.log(error.toString())
-                    pendingResult?.error(CREATE_PAYMENT_ERROR, message, error?.message)
-                }
+                        PensoPayActivity.openPensoPayPaymentWindow(activity, link)
+                    },
+                    errorListener = { _, message, error ->
+                        PensoPay.log(message.toString())
+                        PensoPay.log(error.toString())
+                        pendingResult?.error(CREATE_PAYMENT_ERROR, message, error?.message)
+                    }
             )
         } catch (exception: Exception) {
             PensoPay.log(exception.message.toString())
@@ -150,24 +150,24 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
 
     private fun convertQPPaymentToMap(payment: PPPayment): Map<String, Any?> {
         return mapOf(
-            "id" to payment.id,
-            "order_id" to payment.order_id,
-            "amount" to payment.accepted,
-            "captured" to payment.captured,
-            "refunded" to payment.refunded,
-            "currency" to payment.currency,
-            "state" to payment.state,
-            "type" to payment.type,
-            "facilitator" to payment.facilitator,
-            "testmode" to payment.testmode,
-            "autocapture" to payment.autocapture,
-            "link" to payment.link,
-            "callback_url" to payment.callback_url,
-            "success_url" to payment.success_url,
-            "cancel_url" to payment.cancel_url,
-            "created_at" to payment.created_at,
-            "updated_at" to payment.updated_at,
-            "expires_at" to payment.expires_at,
+                "id" to payment.id,
+                "order_id" to payment.order_id,
+                "amount" to payment.accepted,
+                "captured" to payment.captured,
+                "refunded" to payment.refunded,
+                "currency" to payment.currency,
+                "state" to payment.state,
+                "type" to payment.type,
+                "facilitator" to payment.facilitator,
+                "testmode" to payment.testmode,
+                "autocapture" to payment.autocapture,
+                "link" to payment.link,
+                "callback_url" to payment.callback_url,
+                "success_url" to payment.success_url,
+                "cancel_url" to payment.cancel_url,
+                "created_at" to payment.created_at,
+                "updated_at" to payment.updated_at,
+                "expires_at" to payment.expires_at,
 //            "variables" to mapOf(
 //                "type" to payment.metadata?.type,
 //                "origin" to payment.metadata?.origin,

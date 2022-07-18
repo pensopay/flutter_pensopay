@@ -10,7 +10,7 @@ class Pensopay {
     _channel.invokeMethod('init', {'api-key': apiKey});
   }
 
-  static Future<Payment> makePayment({required String currency, required String orderId, required double amount, required String facilitator, int autoCapture = 0,}) async {
+  static Future<Payment> makePayment({required String currency, required String orderId, required double amount, required String facilitator, bool autocapture = false,}) async {
     try {
       final result = await _channel.invokeMethod(
         'makePayment',
@@ -19,7 +19,7 @@ class Pensopay {
           'order_id': orderId,
           'amount': amount,
           'facilitator': facilitator,
-          'auto-capture': autoCapture,
+          'autocapture': autocapture,
         },
       );
 

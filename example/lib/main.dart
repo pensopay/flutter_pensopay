@@ -63,6 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
         orderId: "first-" + randomNumber.toString(),
         amount: 500,
         facilitator: 'quickpay',
+        autocapture: true
       ).then((payment) {
         print("SUCCESS");
         print(payment.id);
