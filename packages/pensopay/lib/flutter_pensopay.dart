@@ -10,19 +10,21 @@ class Pensopay {
     _channel.invokeMethod('init', {'api-key': apiKey});
   }
 
-  static Future<Payment> makePayment({required String currency, required String orderId, required double amount, required String facilitator, bool autocapture = false,}) async {
+  static Future<Payment> makePayment({required String currency, required String order_id, required double amount, required String facilitator, bool autocapture = false, bool testmode = false,}) async {
     try {
       final result = await _channel.invokeMethod(
         'makePayment',
         <String, dynamic>{
           'currency': currency,
-          'order_id': orderId,
+          'order_id': order_id,
           'amount': amount,
           'facilitator': facilitator,
           'autocapture': autocapture,
+          'testmode': testmode
         },
       );
 
+      print(result.toString());
       return Payment.fromMap(result);
     } on PlatformException catch (error) {
       switch (error.code) {

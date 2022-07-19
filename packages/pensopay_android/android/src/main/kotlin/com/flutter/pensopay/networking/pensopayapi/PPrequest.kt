@@ -17,7 +17,8 @@ open class PPrequest<T>(private val method: Int, private val path: String, priva
     // Static
 
     companion object {
-        protected const val apiBaseUrl = "https://stress-api.pensopay.dev/v1"
+        //protected const val apiBaseUrl = "https://stress-api.pensopay.dev/v1"
+        protected const val apiBaseUrl = "https://api.pensopay.com/v1"
     }
 
 

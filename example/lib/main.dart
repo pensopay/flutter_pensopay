@@ -4,7 +4,8 @@ import 'dart:math';
 
 void main() {
   runApp(const MyApp());
-  Pensopay.init(apiKey: "17c3236315ec4df3d236895330f314fd00110bde4b01f368ec1e059e176957f0");
+  //Pensopay.init(apiKey: "17c3236315ec4df3d236895330f314fd00110bde4b01f368ec1e059e176957f0");
+  Pensopay.init(apiKey: "f38af28dfa5e3da5cbcbb673d36da8f638f9dcf95d28ae91c0f3110ecb06236f");
 }
 
 class MyApp extends StatelessWidget {
@@ -60,29 +61,20 @@ class _MyHomePageState extends State<MyHomePage> {
     try {
       Pensopay.makePayment(
         currency: 'DKK',
-        orderId: "first-" + randomNumber.toString(),
+        order_id: "first-" + randomNumber.toString(),
         amount: 500,
         facilitator: 'quickpay',
-        autocapture: true
+        autocapture: true,
+        testmode: true
       ).then((payment) {
         print("SUCCESS");
         print(payment.id);
-        print(payment.toString());
+        print(payment.order_id);
       });
     } catch (error) {
       print("ERROR");
+      print(error.toString());
     }
-
-    // Pensopay.makePayment(currency: "DKK", orderId: "first-" + randomNumber.toString(), amount: 500, facilitator: "quickpay").then((payment) {
-    //
-    //   print(payment.toString());
-    //
-    //   if (payment.accepted) {
-    //     print("YAY");
-    //     print(payment.id.toString());
-    //     // The payment has been authorized 👍
-    //   }
-    // });
   }
 
   @override

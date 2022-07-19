@@ -1,6 +1,6 @@
 class Payment {
   final int id;
-  final String orderId;
+  final String order_id;
   final String type;
   final int amount;
   final int captured;
@@ -12,18 +12,18 @@ class Payment {
   final bool testmode;
   final bool autocapture;
   final String link;
-  final String callbackUrl;
-  final String successUrl;
-  final String cancelUrl;
+  final String? callback_url;
+  final String success_url;
+  final String cancel_url;
   final List<Order> order;
   final List<dynamic> variables;
-  final String expiresAt;
-  final String createdAt;
-  final String updatedAt;
+  final String expires_at;
+  final String created_at;
+  final String updated_at;
 
   Payment({
     required this.id,
-    required this.orderId,
+    required this.order_id,
     required this.type,
     required this.amount,
     required this.captured,
@@ -35,20 +35,20 @@ class Payment {
     required this.testmode,
     required this.autocapture,
     required this.link,
-    required this.callbackUrl,
-    required this.successUrl,
-    required this.cancelUrl,
+    required this.callback_url,
+    required this.success_url,
+    required this.cancel_url,
     required this.order,
     required this.variables,
-    required this.expiresAt,
-    required this.createdAt,
-    required this.updatedAt,
+    required this.expires_at,
+    required this.created_at,
+    required this.updated_at,
   });
 
   factory Payment.fromMap(Map map) {
     return Payment(
       id: map['id'] as int,
-      orderId: map['order_id'] as String,
+      order_id: map['order_id'] as String,
       type: map['type'] as String,
       amount: map['amount'] as int,
       captured: map['captured'] as int,
@@ -60,16 +60,16 @@ class Payment {
       testmode: map['testmode'] as bool,
       autocapture: map['autocapture'] as bool,
       link: map['link'] as String,
-      callbackUrl: map['callback_url'] as String,
-      successUrl: map['success_url'] as String,
-      cancelUrl: map['cancel_url'] as String,
+      callback_url: map['callback_url'] as String?,
+      success_url: map['success_url'] as String,
+      cancel_url: map['cancel_url'] as String,
       order: (map['order'] as List<dynamic>)
           .map((entry) => Order.fromMap(entry))
           .toList(),
       variables: map['variables'] as List<dynamic>,
-      expiresAt: map['expires_at'] as String,
-      createdAt: map['created_at'] as String,
-      updatedAt: map['updated_at'] as String,
+      expires_at: map['expires_at'] as String,
+      created_at: map['created_at'] as String,
+      updated_at: map['updated_at'] as String,
     );
   }
 }
@@ -80,12 +80,8 @@ class Order {
   final Basket? basket;
   final Shipping? shipping;
 
-  Order({
-    this.billingAddress,
-    this.shippingAddress,
-    this.basket,
-    this.shipping
-  });
+  Order(
+      {this.billingAddress, this.shippingAddress, this.basket, this.shipping});
 
   factory Order.fromMap(Map map) {
     return Order(

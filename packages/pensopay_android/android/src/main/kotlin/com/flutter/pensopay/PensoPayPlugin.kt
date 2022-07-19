@@ -13,8 +13,6 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry
 import io.flutter.plugin.common.PluginRegistry.Registrar
-import com.flutter.pensopay.PensoPay
-import com.flutter.pensopay.PensoPayActivity
 import com.flutter.pensopay.networking.pensopayapi.pensopaylink.models.PPPayment
 import com.flutter.pensopay.networking.pensopayapi.pensopaylink.models.PPPaymentLink
 import com.flutter.pensopay.networking.pensopayapi.pensopaylink.payments.*
@@ -99,11 +97,12 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
             }
             METHOD_CALL_MAKE_PAYMENT -> {
                 val currency = call.argument<String>("currency")!!
-                val orderId = call.argument<String>("order_id")!!
+                val order_id = call.argument<String>("order_id")!!
                 val amount = call.argument<Double>("amount")!!
                 val facilitator = call.argument<String>("facilitator")!!
-                val autoCapture = call.argument<Boolean>("autocapture")
-                makePayment(currency, orderId, amount, facilitator, autoCapture)
+                val autocapture = call.argument<Boolean>("autocapture")
+                val testmode = call.argument<Boolean>("testmode")
+                makePayment(currency, order_id, amount, facilitator, autocapture, testmode)
             }
             else -> result.notImplemented()
         }
@@ -117,13 +116,13 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
         PensoPay.init(apiKey, context)
     }
 
-    private fun makePayment(currency: String, orderId: String, amount: Double, facilitator: String, autocapture: Boolean?) {
-        val createPaymentParams = PPCreatePaymentParameters(amount, currency, orderId, facilitator, autocapture as Boolean)
+    private fun makePayment(currency: String, order_id: String, amount: Double, facilitator: String, autocapture: Boolean?, testmode: Boolean?) {
+        val createPaymentParams = PPCreatePaymentParameters(amount, currency, order_id, facilitator, autocapture as Boolean, testmode as Boolean)
         val createPaymentRequest = PPCreatePaymentRequest(createPaymentParams)
 
         PensoPay.log(amount.toString())
         PensoPay.log(currency)
-        PensoPay.log(orderId)
+        PensoPay.log(order_id)
         PensoPay.log(facilitator)
 
         try {
@@ -152,22 +151,26 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
         return mapOf(
                 "id" to payment.id,
                 "order_id" to payment.order_id,
-                "amount" to payment.accepted,
+                "type" to payment.type,
+                "amount" to payment.amount,
                 "captured" to payment.captured,
                 "refunded" to payment.refunded,
                 "currency" to payment.currency,
                 "state" to payment.state,
-                "type" to payment.type,
                 "facilitator" to payment.facilitator,
+                "reference" to payment.reference,
                 "testmode" to payment.testmode,
                 "autocapture" to payment.autocapture,
                 "link" to payment.link,
                 "callback_url" to payment.callback_url,
                 "success_url" to payment.success_url,
                 "cancel_url" to payment.cancel_url,
-                "created_at" to payment.created_at,
-                "updated_at" to payment.updated_at,
+                "order" to payment.order,
+                "variables" to payment.variables,
                 "expires_at" to payment.expires_at,
+                "created_at" to payment.created_at,
+                "updated_at" to payment.updated_at
+
 //            "variables" to mapOf(
 //                "type" to payment.metadata?.type,
 //                "origin" to payment.metadata?.origin,

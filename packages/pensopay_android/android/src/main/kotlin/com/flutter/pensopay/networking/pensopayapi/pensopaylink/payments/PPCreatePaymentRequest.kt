@@ -11,15 +11,16 @@ import org.json.JSONObject
 
 class PPCreatePaymentRequest(params: PPCreatePaymentParameters): PPrequest<PPPayment>(Request.Method.POST, "/payment", params, PPPayment::class.java)
 
-class PPCreatePaymentParameters(amount: Double, currency: String, orderId: String, facilitator: String, autocapture: Boolean): JSONObject() {
+class PPCreatePaymentParameters(amount: Double, currency: String, order_id: String, facilitator: String, autocapture: Boolean, testmode: Boolean): JSONObject() {
 
     // Required Properties
 
     var amount: Double = amount
     var currency: String = currency
-    var order_id: String = orderId
+    var order_id: String = order_id
     var facilitator: String = facilitator
     var autocapture: Boolean = autocapture
+    var testmode: Boolean = testmode
 
     var success_url = PensoPayActivity.SUCCESS_URL
     var cancel_url = PensoPayActivity.FAILURE_URL

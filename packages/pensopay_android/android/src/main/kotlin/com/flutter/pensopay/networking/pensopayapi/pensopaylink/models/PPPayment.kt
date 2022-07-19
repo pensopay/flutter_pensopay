@@ -1,36 +1,30 @@
 package com.flutter.pensopay.networking.pensopayapi.pensopaylink.models
 
+import android.src.main.kotlin.com.flutter.pensopay.networking.pensopayapi.pensopaylink.models.PPOrder
 import org.json.JSONObject
 
 class PPPayment: JSONObject() {
 
     // Properties
-
-    var id: Int = 0
-    var captured: Int = 0
-    var refunded: Int = 0
-    var order_id: String = ""
-    var accepted: Boolean = false
-    var type: String = ""
-    var currency: String = ""
-    var state: String = ""
-    var testmode: Boolean = false
-    var autocapture: Boolean = false
-    var created_at: String = ""
-    var updated_at: String = ""
-    var expires_at: String = ""
-
-    var callback_url: String? = null
-    var link: String? = null
-    var success_url: String? = null
-    var facilitator: String? = null
-    var cancel_url: String? = null
-
-//    var operations: List<PPOperation>? = null
-//    var shipping_address: PPAddress? = null
-//    var invoice_address: PPAddress? = null
-//    var basket: List<PPBasket>? = null
-//    var shipping: PPShipping? = null
-//    var metadata: PPMetadata? = null
-//    var link: PPPaymentLink? = null
+    val id: Int = 0
+    val order_id: String = ""
+    val type: String = ""
+    val amount = 0
+    val captured = 0
+    val refunded = 0
+    val currency: String = ""
+    val state: String = ""
+    val facilitator: String = ""
+    val reference: String = ""
+    val testmode: Boolean = false
+    val autocapture: Boolean = false
+    val link: String = ""
+    val callback_url: String = ""
+    val success_url: String = ""
+    val cancel_url: String = ""
+    val order: List<PPOrder>? = null
+    val variables: List<Any>? = null
+    val expires_at: String = ""
+    val created_at: String = ""
+    val updated_at: String = ""
 }
