@@ -1,167 +1,236 @@
 class Payment {
   final int id;
   final String orderId;
-  final bool accepted;
   final String type;
-  final String textOnStatement;
+  final int amount;
+  final int captured;
+  final int refunded;
   final String currency;
   final String state;
-  final bool testMode;
+  final String facilitator;
+  final String reference;
+  final bool testmode;
+  final bool autocapture;
+  final String link;
+  final String callbackUrl;
+  final String successUrl;
+  final String cancelUrl;
+  final List<Order> order;
+  final List<dynamic> variables;
+  final String expiresAt;
   final String createdAt;
   final String updatedAt;
-  final int balance;
-  final String brandingId;
-  final String acquirer;
-  final String facilitator;
-  final String retentedAt;
-  final int fee;
-  final int subscriptionId;
-  final String deadlineAt;
-  final MetaData metaData;
-  final List<Operation> operations;
 
   Payment({
     required this.id,
     required this.orderId,
-    required this.accepted,
     required this.type,
-    required this.textOnStatement,
+    required this.amount,
+    required this.captured,
+    required this.refunded,
     required this.currency,
     required this.state,
-    required this.testMode,
+    required this.facilitator,
+    required this.reference,
+    required this.testmode,
+    required this.autocapture,
+    required this.link,
+    required this.callbackUrl,
+    required this.successUrl,
+    required this.cancelUrl,
+    required this.order,
+    required this.variables,
+    required this.expiresAt,
     required this.createdAt,
     required this.updatedAt,
-    required this.balance,
-    required this.brandingId,
-    required this.acquirer,
-    required this.facilitator,
-    required this.retentedAt,
-    required this.fee,
-    required this.subscriptionId,
-    required this.deadlineAt,
-    required this.metaData,
-    required this.operations,
   });
 
   factory Payment.fromMap(Map map) {
     return Payment(
       id: map['id'] as int,
       orderId: map['order_id'] as String,
-      accepted: map['accepted'] as bool,
-      type: map['type'] as String,
-      textOnStatement: map['text_on_statement'] as String,
-      currency: map['currency'] as String,
-      state: map['state'] as String,
-      testMode: map['test_mode'] as bool,
-      createdAt: map['created_at'] as String,
-      updatedAt: map['updated_at'] as String,
-      balance: map['balance'] as int,
-      brandingId: map['branding_id'] as String,
-      acquirer: map['acquirer'] as String,
-      facilitator: map['facilitator'] as String,
-      retentedAt: map['retented_at'] as String,
-      fee: map['fee'] as int,
-      subscriptionId: map['subscriptionId'] as int,
-      deadlineAt: map['deadline_at'] as String,
-      metaData: MetaData.fromMap(map['metadata']),
-      operations: (map['operatinons'] as List<dynamic>).map((entry) => Operation.fromMap(entry)).toList(),
-    );
-  }
-}
-
-class MetaData {
-  final String type;
-  final String origin;
-  final String brand;
-  final String bin;
-  final bool corporate;
-  final String last4;
-  final int expMonth;
-  final int expYear;
-  final String country;
-  final bool is3dSecure;
-  final String issuedTo;
-  final String hash;
-  final String number;
-  final String customerIp;
-  final String customerCountry;
-  final String shopSystemName;
-  final String shopSystemVersion;
-
-  MetaData({
-    required this.type,
-    required this.origin,
-    required this.brand,
-    required this.bin,
-    required this.corporate,
-    required this.last4,
-    required this.expMonth,
-    required this.expYear,
-    required this.country,
-    required this.is3dSecure,
-    required this.issuedTo,
-    required this.hash,
-    required this.number,
-    required this.customerIp,
-    required this.customerCountry,
-    required this.shopSystemName,
-    required this.shopSystemVersion,
-  });
-
-  factory MetaData.fromMap(Map map) {
-    return MetaData(
-      type: map['type'] as String,
-      origin: map['origin'] as String,
-      brand: map['brand'] as String,
-      bin: map['bin'] as String,
-      corporate: map['corporate'] as bool,
-      last4: map['last4'] as String,
-      expMonth: map['exp_month'] as int,
-      expYear: map['exp_year'] as int,
-      country: map['country'] as String,
-      is3dSecure: map['is_3d_secure'] as bool,
-      issuedTo: map['issued_to'] as String,
-      hash: map['hash'] as String,
-      number: map['number'] as String,
-      customerIp: map['customer_ip'] as String,
-      customerCountry: map['customer_country'] as String,
-      shopSystemName: map['shopsystem_name'] as String,
-      shopSystemVersion: map['shopsystem_version'] as String,
-    );
-  }
-}
-
-class Operation {
-  final int id;
-  final String type;
-  final int amount;
-  final bool pending;
-  final String ppStatusCode;
-  final String ppStatusMsg;
-  final String aqStatusMsg;
-  final String acquirer;
-
-  Operation({
-    required this.id,
-    required this.type,
-    required this.amount,
-    required this.pending,
-    required this.ppStatusCode,
-    required this.ppStatusMsg,
-    required this.aqStatusMsg,
-    required this.acquirer,
-  });
-
-  factory Operation.fromMap(Map map) {
-    return Operation(
-      id: map['id'] as int,
       type: map['type'] as String,
       amount: map['amount'] as int,
-      pending: map['pending'] as bool,
-      ppStatusCode: map['qp_status_code'] as String,
-      ppStatusMsg: map['qp_status_msg'] as String,
-      aqStatusMsg: map['aq_status_msg'] as String,
-      acquirer: map['acquirer'] as String,
+      captured: map['captured'] as int,
+      refunded: map['refunded'] as int,
+      currency: map['currency'] as String,
+      state: map['state'] as String,
+      facilitator: map['facilitator'] as String,
+      reference: map['reference'] as String,
+      testmode: map['testmode'] as bool,
+      autocapture: map['autocapture'] as bool,
+      link: map['link'] as String,
+      callbackUrl: map['callback_url'] as String,
+      successUrl: map['success_url'] as String,
+      cancelUrl: map['cancel_url'] as String,
+      order: (map['order'] as List<dynamic>)
+          .map((entry) => Order.fromMap(entry))
+          .toList(),
+      variables: map['variables'] as List<dynamic>,
+      expiresAt: map['expires_at'] as String,
+      createdAt: map['created_at'] as String,
+      updatedAt: map['updated_at'] as String,
+    );
+  }
+}
+
+class Order {
+  final BillingAddress? billingAddress;
+  final ShippingAddress? shippingAddress;
+  final Basket? basket;
+  final Shipping? shipping;
+
+  Order({
+    this.billingAddress,
+    this.shippingAddress,
+    this.basket,
+    this.shipping
+  });
+
+  factory Order.fromMap(Map map) {
+    return Order(
+      billingAddress: map['billing_address'] as BillingAddress?,
+      shippingAddress: map['shipping_address'] as ShippingAddress?,
+      basket: map['basket'] as Basket?,
+      shipping: map['shipping'] as Shipping?,
+    );
+  }
+}
+
+//* @bodyParam order.billing_address.name string
+//* @bodyParam order.billing_address.address string
+//* @bodyParam order.billing_address.zipcode string
+//* @bodyParam order.billing_address.city string
+//* @bodyParam order.billing_address.country string
+//* @bodyParam order.billing_address.email string
+//* @bodyParam order.billing_address.phone_number string
+//* @bodyParam order.billing_address.mobile_number string
+class BillingAddress {
+  final String? name;
+  final String? address;
+  final String? zipcode;
+  final String? city;
+  final String? email;
+  final String? phoneNumber;
+  final String? mobileNumber;
+
+  BillingAddress({
+    this.name,
+    this.address,
+    this.zipcode,
+    this.city,
+    this.email,
+    this.phoneNumber,
+    this.mobileNumber,
+  });
+
+  factory BillingAddress.fromMap(Map map) {
+    return BillingAddress(
+      name: map['name'] as String?,
+      address: map['address'] as String?,
+      zipcode: map['zipcode'] as String?,
+      city: map['city'] as String?,
+      email: map['email'] as String?,
+      phoneNumber: map['phone_number'] as String?,
+      mobileNumber: map['mobile_number'] as String?,
+    );
+  }
+}
+
+//* @bodyParam order.shipping_address.name string
+//* @bodyParam order.shipping_address.address string
+//* @bodyParam order.shipping_address.zipcode string
+//* @bodyParam order.shipping_address.city string
+//* @bodyParam order.shipping_address.country string
+//* @bodyParam order.shipping_address.email string
+//* @bodyParam order.shipping_address.phone_number string
+//* @bodyParam order.shipping_address.mobile_number string
+class ShippingAddress {
+  final String? name;
+  final String? address;
+  final String? zipcode;
+  final String? city;
+  final String? email;
+  final String? phoneNumber;
+  final String? mobileNumber;
+
+  ShippingAddress({
+    this.name,
+    this.address,
+    this.zipcode,
+    this.city,
+    this.email,
+    this.phoneNumber,
+    this.mobileNumber,
+  });
+
+  factory ShippingAddress.fromMap(Map map) {
+    return ShippingAddress(
+      name: map['name'] as String?,
+      address: map['address'] as String?,
+      zipcode: map['zipcode'] as String?,
+      city: map['city'] as String?,
+      email: map['email'] as String?,
+      phoneNumber: map['phone_number'] as String?,
+      mobileNumber: map['mobile_number'] as String?,
+    );
+  }
+}
+
+//* @bodyParam order.basket.qty integer
+//* @bodyParam order.basket.sku string
+//* @bodyParam order.basket.vat float
+//* @bodyParam order.basket.name string
+//* @bodyParam order.basket.price integer price in cents
+class Basket {
+  final int qty;
+  final String sku;
+  final double vat;
+  final String name;
+  final int price;
+
+  Basket({
+    required this.qty,
+    required this.sku,
+    required this.vat,
+    required this.name,
+    required this.price,
+  });
+
+  factory Basket.fromMap(Map map) {
+    return Basket(
+      qty: map['qty'] as int,
+      sku: map['sku'] as String,
+      vat: map['vat'] as double,
+      name: map['name'] as String,
+      price: map['price'] as int,
+    );
+  }
+}
+
+//* @bodyParam order.shipping.amount integer
+//* @bodyParam order.shipping.method string
+//* @bodyParam order.shipping.company string
+//* @bodyParam order.shipping.vat_rate float
+class Shipping {
+  final int amount;
+  final String method;
+  final String company;
+  final double vatRate;
+
+  Shipping({
+    required this.amount,
+    required this.method,
+    required this.company,
+    required this.vatRate,
+  });
+
+  factory Shipping.fromMap(Map map) {
+    return Shipping(
+      amount: map['amount'] as int,
+      method: map['method'] as String,
+      company: map['company'] as String,
+      vatRate: map['vatRate'] as double,
     );
   }
 }
