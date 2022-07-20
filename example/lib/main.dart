@@ -61,20 +61,32 @@ class _MyHomePageState extends State<MyHomePage> {
     int randomNumber = random.nextInt(10000)+1000;
 
     try {
-      //Pensopay.makePayment(
-      //  currency: 'DKK',
-      //  order_id: "first-" + randomNumber.toString(),
-      //  amount: 500,
-      //  facilitator: 'quickpay',
-      //  autocapture: true,
-      //  testmode: true
-      Pensopay.getPayment(payment_id: 1096322).then((payment) {
-        print("SUCCESS");
+      Pensopay.makePayment(
+        currency: 'DKK',
+        order_id: "first-" + randomNumber.toString(),
+        amount: 500,
+        facilitator: 'quickpay',
+        testmode: true
+      ).then((payment) {
+        print("CREATE SUCCESS");
         print(payment.id);
         print(payment.order_id);
+
+        try {
+          Pensopay.capturePayment(
+            payment_id: payment.id
+          ).then((payment) {
+            print("CAPTURE SUCCESS");
+            print(payment.id);
+            print(payment.order_id);
+          });
+        } catch (error) {
+          print("CAPTURE ERROR");
+          print(error.toString());
+        }
       });
     } catch (error) {
-      print("ERROR");
+      print("CREATE ERROR");
       print(error.toString());
     }
   }

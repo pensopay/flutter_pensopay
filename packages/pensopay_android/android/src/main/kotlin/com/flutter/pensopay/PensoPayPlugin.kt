@@ -41,6 +41,9 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
         private const val METHOD_CALL_INIT = "init"
         private const val METHOD_CALL_MAKE_PAYMENT = "makePayment"
         private const val METHOD_CALL_GET_PAYMENT = "getPayment"
+        private const val METHOD_CALL_CAPTURE_PAYMENT = "capturePayment"
+        private const val METHOD_CALL_REFUND_PAYMENT = "refundPayment"
+        private const val METHOD_CALL_CANCEL_PAYMENT = "cancelPayment"
 
         private const val PENSO_PAY_SETUP_ERROR = "0"
         private const val CREATE_PAYMENT_ERROR = "1"
@@ -109,6 +112,20 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
                 val payment_id = call.argument<Int>("payment_id")!!
                 getPayment(payment_id)
             }
+            METHOD_CALL_CAPTURE_PAYMENT -> {
+                val payment_id = call.argument<Int>("payment_id")!!
+                val amount = call.argument<Double>("amount")
+                capturePayment(payment_id, amount)
+            }
+            METHOD_CALL_REFUND_PAYMENT -> {
+                val payment_id = call.argument<Int>("payment_id")!!
+                val amount = call.argument<Double>("amount")
+                //refundPayment(payment_id, amount)
+            }
+            METHOD_CALL_CANCEL_PAYMENT -> {
+                val payment_id = call.argument<Int>("payment_id")!!
+                //cancelPayment(payment_id)
+            }
             else -> result.notImplemented()
         }
     }
@@ -157,6 +174,27 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
 
         try {
             getPaymentRequest.sendRequest(
+                    listener = { payment ->
+                        pendingResult?.success(convertQPPaymentToMap(payment))
+                    },
+                    errorListener = { _, message, error ->
+                        PensoPay.log(message.toString())
+                        PensoPay.log(error.toString())
+                        pendingResult?.error(CREATE_PAYMENT_ERROR, message, error?.message)
+                    }
+            )
+        } catch (exception: Exception) {
+            PensoPay.log(exception.message.toString())
+            pendingResult?.error(PENSO_PAY_SETUP_ERROR, exception?.message, exception?.cause)
+        }
+    }
+
+    private fun capturePayment(payment_id: Int, amount: Double?) {
+        val capturePaymentParams = PPCapturePaymentParameters(payment_id, amount)
+        val capturePaymentRequest = PPCapturePaymentRequest(capturePaymentParams)
+
+        try {
+            capturePaymentRequest.sendRequest(
                     listener = { payment ->
                         pendingResult?.success(convertQPPaymentToMap(payment))
                     },
