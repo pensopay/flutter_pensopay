@@ -79,6 +79,19 @@ class _MyHomePageState extends State<MyHomePage> {
             print("CAPTURE SUCCESS");
             print(payment.id);
             print(payment.order_id);
+
+            try {
+              Pensopay.refundPayment(
+                payment_id: payment.id
+              ).then((payment) {
+                print("REFUND SUCCESS");
+                print(payment.id);
+                print(payment.order_id);
+              });
+            } catch (error) {
+              print("REFUND ERROR");
+              print(error.toString());
+            }
           });
         } catch (error) {
           print("CAPTURE ERROR");

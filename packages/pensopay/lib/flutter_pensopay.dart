@@ -108,4 +108,36 @@ class Pensopay {
       }
     }
   }
+
+  static Future<Payment> refundPayment({required int payment_id, double? amount}) async {
+    try {
+      final result = await _channel.invokeMethod(
+        'refundPayment',
+        <String, dynamic>{
+          'payment_id': payment_id,
+          'amount': amount
+        },
+      );
+
+      print(result.toString());
+      return Payment.fromMap(result);
+    } on PlatformException catch (error) {
+      switch (error.code) {
+        case "0":
+          throw PensoPaySetupException(error.message!);
+        case "1":
+          throw CreatePaymentException(error.details);
+        case "2":
+          throw CreatePaymentLinkException(error.details);
+        case "3":
+          throw ActivityException(error.details);
+        case "4":
+          throw ActivityFailureException(error.details);
+        case "5":
+          throw PaymentFailureException(error.details);
+        default:
+          rethrow;
+      }
+    }
+  }
 }

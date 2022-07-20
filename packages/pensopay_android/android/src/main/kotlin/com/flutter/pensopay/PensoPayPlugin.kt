@@ -120,7 +120,7 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
             METHOD_CALL_REFUND_PAYMENT -> {
                 val payment_id = call.argument<Int>("payment_id")!!
                 val amount = call.argument<Double>("amount")
-                //refundPayment(payment_id, amount)
+                refundPayment(payment_id, amount)
             }
             METHOD_CALL_CANCEL_PAYMENT -> {
                 val payment_id = call.argument<Int>("payment_id")!!
@@ -195,6 +195,27 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
 
         try {
             capturePaymentRequest.sendRequest(
+                    listener = { payment ->
+                        pendingResult?.success(convertQPPaymentToMap(payment))
+                    },
+                    errorListener = { _, message, error ->
+                        PensoPay.log(message.toString())
+                        PensoPay.log(error.toString())
+                        pendingResult?.error(CREATE_PAYMENT_ERROR, message, error?.message)
+                    }
+            )
+        } catch (exception: Exception) {
+            PensoPay.log(exception.message.toString())
+            pendingResult?.error(PENSO_PAY_SETUP_ERROR, exception?.message, exception?.cause)
+        }
+    }
+
+    private fun refundPayment(payment_id: Int, amount: Double?) {
+        val refundPaymentParams = PPRefundPaymentParameters(payment_id, amount)
+        val refundPaymentRequest = PPRefundPaymentRequest(refundPaymentParams)
+
+        try {
+            refundPaymentRequest.sendRequest(
                     listener = { payment ->
                         pendingResult?.success(convertQPPaymentToMap(payment))
                     },
