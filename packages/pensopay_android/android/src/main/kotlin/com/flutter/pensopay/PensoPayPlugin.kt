@@ -40,6 +40,7 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
     companion object {
         private const val METHOD_CALL_INIT = "init"
         private const val METHOD_CALL_MAKE_PAYMENT = "makePayment"
+        private const val METHOD_CALL_GET_PAYMENT = "getPayment"
 
         private const val PENSO_PAY_SETUP_ERROR = "0"
         private const val CREATE_PAYMENT_ERROR = "1"
@@ -104,6 +105,10 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
                 val testmode = call.argument<Boolean>("testmode")
                 makePayment(currency, order_id, amount, facilitator, autocapture, testmode)
             }
+            METHOD_CALL_GET_PAYMENT -> {
+                val payment_id = call.argument<Int>("payment_id")!!
+                getPayment(payment_id)
+            }
             else -> result.notImplemented()
         }
     }
@@ -134,6 +139,26 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
                         link.url = payment.link!!
 
                         PensoPayActivity.openPensoPayPaymentWindow(activity, link)
+                    },
+                    errorListener = { _, message, error ->
+                        PensoPay.log(message.toString())
+                        PensoPay.log(error.toString())
+                        pendingResult?.error(CREATE_PAYMENT_ERROR, message, error?.message)
+                    }
+            )
+        } catch (exception: Exception) {
+            PensoPay.log(exception.message.toString())
+            pendingResult?.error(PENSO_PAY_SETUP_ERROR, exception?.message, exception?.cause)
+        }
+    }
+
+    private fun getPayment(payment_id: Int) {
+        val getPaymentRequest = PPGetPaymentRequest(payment_id)
+
+        try {
+            getPaymentRequest.sendRequest(
+                    listener = { payment ->
+                        pendingResult?.success(convertQPPaymentToMap(payment))
                     },
                     errorListener = { _, message, error ->
                         PensoPay.log(message.toString())

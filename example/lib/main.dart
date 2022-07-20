@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pensopay/flutter_pensopay.dart';
 import 'dart:math';
 
+import 'package:flutter_pensopay/payment.dart';
+
 void main() {
   runApp(const MyApp());
   //Pensopay.init(apiKey: "17c3236315ec4df3d236895330f314fd00110bde4b01f368ec1e059e176957f0");
@@ -59,14 +61,14 @@ class _MyHomePageState extends State<MyHomePage> {
     int randomNumber = random.nextInt(10000)+1000;
 
     try {
-      Pensopay.makePayment(
-        currency: 'DKK',
-        order_id: "first-" + randomNumber.toString(),
-        amount: 500,
-        facilitator: 'quickpay',
-        autocapture: true,
-        testmode: true
-      ).then((payment) {
+      //Pensopay.makePayment(
+      //  currency: 'DKK',
+      //  order_id: "first-" + randomNumber.toString(),
+      //  amount: 500,
+      //  facilitator: 'quickpay',
+      //  autocapture: true,
+      //  testmode: true
+      Pensopay.getPayment(payment_id: 1096322).then((payment) {
         print("SUCCESS");
         print(payment.id);
         print(payment.order_id);
