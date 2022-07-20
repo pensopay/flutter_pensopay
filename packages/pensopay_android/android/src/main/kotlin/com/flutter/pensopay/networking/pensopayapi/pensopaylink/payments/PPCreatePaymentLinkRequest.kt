@@ -17,7 +17,7 @@ class PPCreatePaymentLinkRequest(params: PPCreatePaymentLinkParameters): PPreque
 
 }
 
-class PPCreatePaymentLinkParameters(var id: Int, var amount: Double): JSONObject() {
+class PPCreatePaymentLinkParameters(var id: Int, var amount: Int): JSONObject() {
     // Optional Properties
 
     var agreement_id: Int? = null

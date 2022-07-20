@@ -39,11 +39,20 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
 
     companion object {
         private const val METHOD_CALL_INIT = "init"
+
+        // Payment calls
         private const val METHOD_CALL_MAKE_PAYMENT = "makePayment"
         private const val METHOD_CALL_GET_PAYMENT = "getPayment"
         private const val METHOD_CALL_CAPTURE_PAYMENT = "capturePayment"
         private const val METHOD_CALL_REFUND_PAYMENT = "refundPayment"
         private const val METHOD_CALL_CANCEL_PAYMENT = "cancelPayment"
+
+        // Subscription calls
+        private const val METHOD_CALL_MAKE_SUBSCRIPTION = "makeSubscription"
+        private const val METHOD_CALL_GET_SUBSCRIPTION = "getSubscription"
+        private const val METHOD_CALL_UPDATE_SUBSCRIPTION = "updateSubscription"
+        private const val METHOD_CALL_CANCEL_SUBSCRIPTION = "cancelSubscription"
+        private const val METHOD_CALL_RECURRING_SUBSCRIPTION = "recurringSubscription"
 
         private const val PENSO_PAY_SETUP_ERROR = "0"
         private const val CREATE_PAYMENT_ERROR = "1"
@@ -102,7 +111,7 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
             METHOD_CALL_MAKE_PAYMENT -> {
                 val currency = call.argument<String>("currency")!!
                 val order_id = call.argument<String>("order_id")!!
-                val amount = call.argument<Double>("amount")!!
+                val amount = call.argument<Int>("amount")!!
                 val facilitator = call.argument<String>("facilitator")!!
                 val autocapture = call.argument<Boolean>("autocapture")
                 val testmode = call.argument<Boolean>("testmode")
@@ -114,17 +123,28 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
             }
             METHOD_CALL_CAPTURE_PAYMENT -> {
                 val payment_id = call.argument<Int>("payment_id")!!
-                val amount = call.argument<Double>("amount")
+                val amount = call.argument<Int>("amount")
                 capturePayment(payment_id, amount)
             }
             METHOD_CALL_REFUND_PAYMENT -> {
                 val payment_id = call.argument<Int>("payment_id")!!
-                val amount = call.argument<Double>("amount")
+                val amount = call.argument<Int>("amount")
                 refundPayment(payment_id, amount)
             }
             METHOD_CALL_CANCEL_PAYMENT -> {
                 val payment_id = call.argument<Int>("payment_id")!!
                 cancelPayment(payment_id)
+            }
+            METHOD_CALL_MAKE_SUBSCRIPTION -> {
+                val subscription_id = call.argument<String>("subscription_id")!!
+                val amount = call.argument<Int>("amount")!!
+                val currency = call.argument<String>("currency")!!
+                val order_id = call.argument<String>("order_id")!!
+
+                val facilitator = call.argument<String>("facilitator")!!
+                val autocapture = call.argument<Boolean>("autocapture")
+                val testmode = call.argument<Boolean>("testmode")
+                makePayment(currency, order_id, amount, facilitator, autocapture, testmode)
             }
             else -> result.notImplemented()
         }
@@ -138,7 +158,7 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
         PensoPay.init(apiKey, context)
     }
 
-    private fun makePayment(currency: String, order_id: String, amount: Double, facilitator: String, autocapture: Boolean?, testmode: Boolean?) {
+    private fun makePayment(currency: String, order_id: String, amount: Int, facilitator: String, autocapture: Boolean?, testmode: Boolean?) {
         val createPaymentParams = PPCreatePaymentParameters(amount, currency, order_id, facilitator, autocapture as Boolean, testmode as Boolean)
         val createPaymentRequest = PPCreatePaymentRequest(createPaymentParams)
 
@@ -153,7 +173,7 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
                         currentPaymentId = payment.id
 
                         val link = PPPaymentLink()
-                        link.url = payment.link!!
+                        link.url = payment.link
 
                         PensoPayActivity.openPensoPayPaymentWindow(activity, link)
                     },
@@ -165,7 +185,7 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
             )
         } catch (exception: Exception) {
             PensoPay.log(exception.message.toString())
-            pendingResult?.error(PENSO_PAY_SETUP_ERROR, exception?.message, exception?.cause)
+            pendingResult?.error(PENSO_PAY_SETUP_ERROR, exception.message, exception.cause)
         }
     }
 
@@ -185,11 +205,11 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
             )
         } catch (exception: Exception) {
             PensoPay.log(exception.message.toString())
-            pendingResult?.error(PENSO_PAY_SETUP_ERROR, exception?.message, exception?.cause)
+            pendingResult?.error(PENSO_PAY_SETUP_ERROR, exception.message, exception.cause)
         }
     }
 
-    private fun capturePayment(payment_id: Int, amount: Double?) {
+    private fun capturePayment(payment_id: Int, amount: Int?) {
         val capturePaymentParams = PPCapturePaymentParameters(payment_id, amount)
         val capturePaymentRequest = PPCapturePaymentRequest(capturePaymentParams)
 
@@ -206,11 +226,11 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
             )
         } catch (exception: Exception) {
             PensoPay.log(exception.message.toString())
-            pendingResult?.error(PENSO_PAY_SETUP_ERROR, exception?.message, exception?.cause)
+            pendingResult?.error(PENSO_PAY_SETUP_ERROR, exception.message, exception.cause)
         }
     }
 
-    private fun refundPayment(payment_id: Int, amount: Double?) {
+    private fun refundPayment(payment_id: Int, amount: Int?) {
         val refundPaymentParams = PPRefundPaymentParameters(payment_id, amount)
         val refundPaymentRequest = PPRefundPaymentRequest(refundPaymentParams)
 
@@ -227,7 +247,7 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
             )
         } catch (exception: Exception) {
             PensoPay.log(exception.message.toString())
-            pendingResult?.error(PENSO_PAY_SETUP_ERROR, exception?.message, exception?.cause)
+            pendingResult?.error(PENSO_PAY_SETUP_ERROR, exception.message, exception.cause)
         }
     }
 
@@ -247,7 +267,7 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
             )
         } catch (exception: Exception) {
             PensoPay.log(exception.message.toString())
-            pendingResult?.error(PENSO_PAY_SETUP_ERROR, exception?.message, exception?.cause)
+            pendingResult?.error(PENSO_PAY_SETUP_ERROR, exception.message, exception.cause)
         }
     }
 
