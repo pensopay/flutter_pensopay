@@ -6,15 +6,17 @@ import com.flutter.pensopay.networking.pensopayapi.pensopaylink.models.*
 import org.json.JSONObject
 import java.util.*
 
-class PPCreateSubscriptionRequest(params: PPCreateSubscriptionParameters): PPrequest<PPSubscription>(Request.Method.POST, "/subscriptions", params, PPSubscription::class.java)
+class PPCreateSubscriptionRequest(params: PPCreateSubscriptionParameters): PPrequest<PPSubscription>(Request.Method.POST, "/subscription", params, PPSubscription::class.java)
 
-class PPCreateSubscriptionParameters(currency: String, order_id: String, description: String): JSONObject() {
+class PPCreateSubscriptionParameters(subscription_id: String, amount: Int, currency: String, description: String, callback_url: String?): JSONObject() {
 
     // Required Properties
 
-    var order_id: String = order_id
+    var subscription_id: String = subscription_id
+    var amount: Int = amount
     var currency: String = currency
     var description: String = description
+    var callback_url: String? = callback_url
 
 
     // Optional Properties

@@ -4,18 +4,25 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import androidx.annotation.NonNull
+import com.flutter.pensopay.networking.pensopayapi.pensopaylink.mandate.PPCreateMandateParameters
+import com.flutter.pensopay.networking.pensopayapi.pensopaylink.mandate.PPCreateMandateRequest
+import com.flutter.pensopay.networking.pensopayapi.pensopaylink.mandate.PPGetMandateRequest
+import com.flutter.pensopay.networking.pensopayapi.pensopaylink.models.PPMandate
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
-import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry
 import io.flutter.plugin.common.PluginRegistry.Registrar
+import io.flutter.plugin.common.MethodChannel.Result
 import com.flutter.pensopay.networking.pensopayapi.pensopaylink.models.PPPayment
 import com.flutter.pensopay.networking.pensopayapi.pensopaylink.models.PPPaymentLink
+import com.flutter.pensopay.networking.pensopayapi.pensopaylink.models.PPSubscription
 import com.flutter.pensopay.networking.pensopayapi.pensopaylink.payments.*
+import com.flutter.pensopay.networking.pensopayapi.pensopaylink.subscriptions.PPCreateSubscriptionParameters
+import com.flutter.pensopay.networking.pensopayapi.pensopaylink.subscriptions.PPCreateSubscriptionRequest
 
 /** PensoPayPlugin */
 class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRegistry.ActivityResultListener {
@@ -25,6 +32,7 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
     private var pendingResult: Result? = null
 
     private var currentPaymentId: Int? = null
+    private var currentType: String? = null
 
     override fun onAttachedToActivity(activityPluginBinding: ActivityPluginBinding) {
         activity = activityPluginBinding.activity
@@ -41,18 +49,21 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
         private const val METHOD_CALL_INIT = "init"
 
         // Payment calls
-        private const val METHOD_CALL_MAKE_PAYMENT = "makePayment"
+        private const val METHOD_CALL_CREATE_PAYMENT = "createPayment"
         private const val METHOD_CALL_GET_PAYMENT = "getPayment"
         private const val METHOD_CALL_CAPTURE_PAYMENT = "capturePayment"
         private const val METHOD_CALL_REFUND_PAYMENT = "refundPayment"
         private const val METHOD_CALL_CANCEL_PAYMENT = "cancelPayment"
 
         // Subscription calls
-        private const val METHOD_CALL_MAKE_SUBSCRIPTION = "makeSubscription"
+        private const val METHOD_CALL_CREATE_SUBSCRIPTION = "createSubscription"
         private const val METHOD_CALL_GET_SUBSCRIPTION = "getSubscription"
         private const val METHOD_CALL_UPDATE_SUBSCRIPTION = "updateSubscription"
         private const val METHOD_CALL_CANCEL_SUBSCRIPTION = "cancelSubscription"
         private const val METHOD_CALL_RECURRING_SUBSCRIPTION = "recurringSubscription"
+
+        // Mandate calls
+        private const val METHOD_CALL_CREATE_MANDATE = "createMandate"
 
         private const val PENSO_PAY_SETUP_ERROR = "0"
         private const val CREATE_PAYMENT_ERROR = "1"
@@ -74,17 +85,44 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
                 val returnedResult = intent?.data?.toString() ?: ""
 
                 if (returnedResult == PensoPayActivity.SUCCESS_RESULT) {
-                    if (currentPaymentId != null) {
+                    if (currentPaymentId != null && currentType == "payment") {
                         val getPaymentRequest = PPGetPaymentRequest(currentPaymentId!!)
 
                         getPaymentRequest.sendRequest(
                                 listener = { payment ->
-                                    pendingResult?.success(convertQPPaymentToMap(payment))
+                                    pendingResult?.success(convertPPPaymentToMap(payment))
                                     currentPaymentId = null
+                                    currentType = null
                                 },
                                 errorListener = { _, message, error ->
                                     pendingResult?.error(PAYMENT_FAILURE_ERROR, message, error?.message)
                                 }
+                        )
+                    } else if (currentPaymentId != null && currentType == "subscription") {
+//                        val getSubscriptionRequest = PPGetSubscriptionRequest(currentPaymentId!!)
+//
+//                        getSubscriptionRequest.sendRequest(
+//                            listener = { subscription ->
+//                                pendingResult?.success(convertPPSubsriptionToMap(subscription))
+//                                currentPaymentId = null
+//                                currentType = null
+//                            },
+//                            errorListener = { _, message, error ->
+//                                pendingResult?.error(PAYMENT_FAILURE_ERROR, message, error?.message)
+//                            }
+//                        )
+//                    } else if (currentPaymentId != null && currentType == "mandate") {
+                        val getMandateRequest = PPGetMandateRequest(currentPaymentId!!)
+
+                        getMandateRequest.sendRequest(
+                            listener = { mandate ->
+                                pendingResult?.success(convertPPMandateToMap(mandate))
+                                currentPaymentId = null
+                                currentType = null
+                            },
+                            errorListener = { _, message, error ->
+                                pendingResult?.error(PAYMENT_FAILURE_ERROR, message, error?.message)
+                            }
                         )
                     }
                 } else if (returnedResult == PensoPayActivity.FAILURE_RESULT) {
@@ -108,14 +146,14 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
                 val apiKey = call.argument<String>("api-key") ?: return
                 init(apiKey)
             }
-            METHOD_CALL_MAKE_PAYMENT -> {
+            METHOD_CALL_CREATE_PAYMENT -> {
                 val currency = call.argument<String>("currency")!!
                 val order_id = call.argument<String>("order_id")!!
                 val amount = call.argument<Int>("amount")!!
                 val facilitator = call.argument<String>("facilitator")!!
                 val autocapture = call.argument<Boolean>("autocapture")
                 val testmode = call.argument<Boolean>("testmode")
-                makePayment(currency, order_id, amount, facilitator, autocapture, testmode)
+                createPayment(currency, order_id, amount, facilitator, autocapture, testmode)
             }
             METHOD_CALL_GET_PAYMENT -> {
                 val payment_id = call.argument<Int>("payment_id")!!
@@ -135,16 +173,19 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
                 val payment_id = call.argument<Int>("payment_id")!!
                 cancelPayment(payment_id)
             }
-            METHOD_CALL_MAKE_SUBSCRIPTION -> {
+            METHOD_CALL_CREATE_SUBSCRIPTION -> {
                 val subscription_id = call.argument<String>("subscription_id")!!
                 val amount = call.argument<Int>("amount")!!
                 val currency = call.argument<String>("currency")!!
-                val order_id = call.argument<String>("order_id")!!
-
+                val description = call.argument<String>("description")!!
+                val callback_url = call.argument<String>("callback_url")
+                createSubscription(subscription_id, amount, currency, description, callback_url)
+            }
+            METHOD_CALL_CREATE_MANDATE -> {
+                val subscription_id = call.argument<Int>("subscription_id")!!
+                val mandate_id = call.argument<String>("mandate_id")!!
                 val facilitator = call.argument<String>("facilitator")!!
-                val autocapture = call.argument<Boolean>("autocapture")
-                val testmode = call.argument<Boolean>("testmode")
-                makePayment(currency, order_id, amount, facilitator, autocapture, testmode)
+                createMandate(subscription_id, mandate_id, facilitator)
             }
             else -> result.notImplemented()
         }
@@ -158,7 +199,7 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
         PensoPay.init(apiKey, context)
     }
 
-    private fun makePayment(currency: String, order_id: String, amount: Int, facilitator: String, autocapture: Boolean?, testmode: Boolean?) {
+    private fun createPayment(currency: String, order_id: String, amount: Int, facilitator: String, autocapture: Boolean?, testmode: Boolean?) {
         val createPaymentParams = PPCreatePaymentParameters(amount, currency, order_id, facilitator, autocapture as Boolean, testmode as Boolean)
         val createPaymentRequest = PPCreatePaymentRequest(createPaymentParams)
 
@@ -171,6 +212,7 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
             createPaymentRequest.sendRequest(
                     listener = { payment ->
                         currentPaymentId = payment.id
+                        currentType = "payment"
 
                         val link = PPPaymentLink()
                         link.url = payment.link
@@ -195,7 +237,7 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
         try {
             getPaymentRequest.sendRequest(
                     listener = { payment ->
-                        pendingResult?.success(convertQPPaymentToMap(payment))
+                        pendingResult?.success(convertPPPaymentToMap(payment))
                     },
                     errorListener = { _, message, error ->
                         PensoPay.log(message.toString())
@@ -216,7 +258,7 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
         try {
             capturePaymentRequest.sendRequest(
                     listener = { payment ->
-                        pendingResult?.success(convertQPPaymentToMap(payment))
+                        pendingResult?.success(convertPPPaymentToMap(payment))
                     },
                     errorListener = { _, message, error ->
                         PensoPay.log(message.toString())
@@ -237,7 +279,7 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
         try {
             refundPaymentRequest.sendRequest(
                     listener = { payment ->
-                        pendingResult?.success(convertQPPaymentToMap(payment))
+                        pendingResult?.success(convertPPPaymentToMap(payment))
                     },
                     errorListener = { _, message, error ->
                         PensoPay.log(message.toString())
@@ -257,7 +299,7 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
         try {
             cancelPaymentRequest.sendRequest(
                     listener = { payment ->
-                        pendingResult?.success(convertQPPaymentToMap(payment))
+                        pendingResult?.success(convertPPPaymentToMap(payment))
                     },
                     errorListener = { _, message, error ->
                         PensoPay.log(message.toString())
@@ -271,7 +313,58 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
         }
     }
 
-    private fun convertQPPaymentToMap(payment: PPPayment): Map<String, Any?> {
+    private fun createSubscription(subscription_id: String, amount: Int, currency: String, description: String, callback_url: String?) {
+        val createSubscriptionParams = PPCreateSubscriptionParameters(subscription_id, amount, currency, description, callback_url)
+        val createSubscriptionRequest = PPCreateSubscriptionRequest(createSubscriptionParams)
+
+        try {
+            createSubscriptionRequest.sendRequest(
+                listener = { subscription ->
+                    currentPaymentId = subscription.id
+                    currentType = "subscription"
+
+                    pendingResult?.success(convertPPSubsriptionToMap(subscription))
+                },
+                errorListener = { _, message, error ->
+                    PensoPay.log(message.toString())
+                    PensoPay.log(error.toString())
+                    pendingResult?.error(CREATE_PAYMENT_ERROR, message, error?.message)
+                }
+            )
+        } catch (exception: Exception) {
+            PensoPay.log(exception.message.toString())
+            pendingResult?.error(PENSO_PAY_SETUP_ERROR, exception.message, exception.cause)
+        }
+    }
+
+    private fun createMandate(subscription_id: Int, mandate_id: String, facilitator: String) {
+        val createMandateParams = PPCreateMandateParameters(subscription_id, mandate_id, facilitator)
+        val createMandateRequest = PPCreateMandateRequest(createMandateParams)
+
+        try {
+            createMandateRequest.sendRequest(
+                listener = { mandate ->
+                    currentPaymentId = mandate.id
+                    currentType = "mandate"
+
+                    val link = PPPaymentLink()
+                    link.url = mandate.link
+
+                    PensoPayActivity.openPensoPayPaymentWindow(activity, link)
+                },
+                errorListener = { _, message, error ->
+                    PensoPay.log(message.toString())
+                    PensoPay.log(error.toString())
+                    pendingResult?.error(CREATE_PAYMENT_ERROR, message, error?.message)
+                }
+            )
+        } catch (exception: Exception) {
+            PensoPay.log(exception.message.toString())
+            pendingResult?.error(PENSO_PAY_SETUP_ERROR, exception.message, exception.cause)
+        }
+    }
+
+    private fun convertPPPaymentToMap(payment: PPPayment): Map<String, Any?> {
         return mapOf(
                 "id" to payment.id,
                 "order_id" to payment.order_id,
@@ -294,45 +387,36 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
                 "expires_at" to payment.expires_at,
                 "created_at" to payment.created_at,
                 "updated_at" to payment.updated_at
+        )
+    }
 
-//            "variables" to mapOf(
-//                "type" to payment.metadata?.type,
-//                "origin" to payment.metadata?.origin,
-//                "brand" to payment.metadata?.brand,
-//                "bin" to payment.metadata?.bin,
-//                "corporate" to payment.metadata?.corporate,
-//                "last4" to payment.metadata?.last4,
-//                "exp_month" to payment.metadata?.exp_month,
-//                "exp_year" to payment.metadata?.exp_year,
-//                "country" to payment.metadata?.country,
-//                "is_3d_secure" to payment.metadata?.is_3d_secure,
-//                "issued_to" to payment.metadata?.issued_to,
-//                "hash" to payment.metadata?.hash,
-//                "number" to payment.metadata?.number,
-//                "customer_ip" to payment.metadata?.customer_ip,
-//                "customer_country" to payment.metadata?.customer_country,
-//                "shopsystem_name" to payment.metadata?.shopsystem_name,
-//                "shopsystem_version" to payment.metadata?.shopsystem_version
-//            ),
-//            "order" to mapOf(
-//                "type" to payment.metadata?.type,
-//                "origin" to payment.metadata?.origin,
-//                "brand" to payment.metadata?.brand,
-//                "bin" to payment.metadata?.bin,
-//                "corporate" to payment.metadata?.corporate,
-//                "last4" to payment.metadata?.last4,
-//                "exp_month" to payment.metadata?.exp_month,
-//                "exp_year" to payment.metadata?.exp_year,
-//                "country" to payment.metadata?.country,
-//                "is_3d_secure" to payment.metadata?.is_3d_secure,
-//                "issued_to" to payment.metadata?.issued_to,
-//                "hash" to payment.metadata?.hash,
-//                "number" to payment.metadata?.number,
-//                "customer_ip" to payment.metadata?.customer_ip,
-//                "customer_country" to payment.metadata?.customer_country,
-//                "shopsystem_name" to payment.metadata?.shopsystem_name,
-//                "shopsystem_version" to payment.metadata?.shopsystem_version
-//            ),
+    private fun convertPPSubsriptionToMap(subscription: PPSubscription): Map<String, Any?> {
+        return mapOf(
+            "id" to subscription.id,
+            "subscription_id" to subscription.subscription_id,
+            "amount" to subscription.amount,
+            "currency" to subscription.currency,
+            "state" to subscription.state,
+            "description" to subscription.description,
+            "callback_url" to subscription.callback_url,
+            "variables" to subscription.variables,
+            "created_at" to subscription.created_at,
+            "updated_at" to subscription.updated_at
+        )
+    }
+
+    private fun convertPPMandateToMap(mandate: PPMandate): Map<String, Any?> {
+        return mapOf(
+            "id" to mandate.id,
+            "subscription_id" to mandate.subscription_id,
+            "mandate_id" to mandate.mandate_id,
+            "state" to mandate.state,
+            "facilitator" to mandate.facilitator,
+            "callback_url" to mandate.callback_url,
+            "link" to mandate.link,
+            "reference" to mandate.reference,
+            "created_at" to mandate.created_at,
+            "updated_at" to mandate.updated_at
         )
     }
 
