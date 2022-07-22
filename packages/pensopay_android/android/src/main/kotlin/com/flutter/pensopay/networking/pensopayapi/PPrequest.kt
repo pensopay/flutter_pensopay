@@ -29,7 +29,6 @@ open class PPrequest<T>(private val method: Int, private val path: String, priva
 
         val headers = HashMap<String, String>()
         headers["Authorization"] = ppHeaders.setToken()
-//        headers["Accept-Version"] = ppHeaders.acceptVersion
         headers["Content-Type"] = "application/json"
         headers["Accept"] = "application/json"
 

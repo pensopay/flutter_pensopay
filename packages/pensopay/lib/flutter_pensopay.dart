@@ -9,7 +9,6 @@ class Pensopay {
   static const MethodChannel _channel = MethodChannel('pensopay');
 
   static Future<void> init({required String apiKey}) async {
-    print(apiKey);
     _channel.invokeMethod('init', {'api-key': apiKey});
   }
 
@@ -120,6 +119,68 @@ class Pensopay {
         <String, dynamic>{
           'payment_id': payment_id,
           'amount': amount
+        },
+      );
+
+      print(result.toString());
+      return Payment.fromMap(result);
+    } on PlatformException catch (error) {
+      switch (error.code) {
+        case "0":
+          throw PensoPaySetupException(error.message!);
+        case "1":
+          throw CreatePaymentException(error.details);
+        case "2":
+          throw CreatePaymentLinkException(error.details);
+        case "3":
+          throw ActivityException(error.details);
+        case "4":
+          throw ActivityFailureException(error.details);
+        case "5":
+          throw PaymentFailureException(error.details);
+        default:
+          rethrow;
+      }
+    }
+  }
+
+  static Future<Payment> cancelPayment({required int payment_id}) async {
+    try {
+      final result = await _channel.invokeMethod(
+        'cancelPayment',
+        <String, dynamic>{
+          'payment_id': payment_id
+        },
+      );
+
+      print(result.toString());
+      return Payment.fromMap(result);
+    } on PlatformException catch (error) {
+      switch (error.code) {
+        case "0":
+          throw PensoPaySetupException(error.message!);
+        case "1":
+          throw CreatePaymentException(error.details);
+        case "2":
+          throw CreatePaymentLinkException(error.details);
+        case "3":
+          throw ActivityException(error.details);
+        case "4":
+          throw ActivityFailureException(error.details);
+        case "5":
+          throw PaymentFailureException(error.details);
+        default:
+          rethrow;
+      }
+    }
+  }
+
+  static Future<Payment> anonymizePayment({required int payment_id}) async {
+    try {
+      final result = await _channel.invokeMethod(
+        'anonymizePayment',
+        <String, dynamic>{
+          'payment_id': payment_id
         },
       );
 

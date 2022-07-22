@@ -53,6 +53,7 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
         private const val METHOD_CALL_CAPTURE_PAYMENT = "capturePayment"
         private const val METHOD_CALL_REFUND_PAYMENT = "refundPayment"
         private const val METHOD_CALL_CANCEL_PAYMENT = "cancelPayment"
+        private const val METHOD_CALL_ANONYMIZE_PAYMENT = "anonymizePayment"
 
         // Subscription calls
         private const val METHOD_CALL_CREATE_SUBSCRIPTION = "createSubscription"
@@ -98,19 +99,6 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
                                 }
                         )
                     } else if (currentPaymentId != null && currentType == "mandate") {
-//                        val getSubscriptionRequest = PPGetSubscriptionRequest(currentPaymentId!!)
-//
-//                        getSubscriptionRequest.sendRequest(
-//                            listener = { subscription ->
-//                                pendingResult?.success(convertPPSubsriptionToMap(subscription))
-//                                currentPaymentId = null
-//                                currentType = null
-//                            },
-//                            errorListener = { _, message, error ->
-//                                pendingResult?.error(PAYMENT_FAILURE_ERROR, message, error?.message)
-//                            }
-//                        )
-//                    } else if (currentPaymentId != null && currentType == "mandate") {
                         val getMandateRequest = PPGetMandateRequest(currentPaymentId!!)
 
                         getMandateRequest.sendRequest(
@@ -173,6 +161,10 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
             METHOD_CALL_CANCEL_PAYMENT -> {
                 val payment_id = call.argument<Int>("payment_id")!!
                 cancelPayment(payment_id)
+            }
+            METHOD_CALL_ANONYMIZE_PAYMENT -> {
+                val payment_id = call.argument<Int>("payment_id")!!
+                anonymizePayment(payment_id)
             }
             // Subscription methods
             METHOD_CALL_CREATE_SUBSCRIPTION -> {
@@ -327,6 +319,26 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
 
         try {
             cancelPaymentRequest.sendRequest(
+                    listener = { payment ->
+                        pendingResult?.success(convertPPPaymentToMap(payment))
+                    },
+                    errorListener = { _, message, error ->
+                        PensoPay.log(message.toString())
+                        PensoPay.log(error.toString())
+                        pendingResult?.error(CREATE_PAYMENT_ERROR, message, error?.message)
+                    }
+            )
+        } catch (exception: Exception) {
+            PensoPay.log(exception.message.toString())
+            pendingResult?.error(PENSO_PAY_SETUP_ERROR, exception.message, exception.cause)
+        }
+    }
+
+    private fun anonymizePayment(payment_id: Int) {
+        val anonymizePaymentRequest = PPAnonymizePaymentRequest(payment_id)
+
+        try {
+            anonymizePaymentRequest.sendRequest(
                     listener = { payment ->
                         pendingResult?.success(convertPPPaymentToMap(payment))
                     },
