@@ -13,7 +13,7 @@ class Pensopay {
     _channel.invokeMethod('init', {'api-key': apiKey});
   }
 
-  static Future<Payment> createPayment({required String currency, required String order_id, required int amount, required String facilitator, bool autocapture = false, bool testmode = false,}) async {
+  static Future<Payment> createPayment({required String currency, required String order_id, required int amount, required String facilitator, String? callback_url, bool autocapture = false, bool testmode = false,}) async {
     try {
       final result = await _channel.invokeMethod(
         'createPayment',
@@ -21,9 +21,10 @@ class Pensopay {
           'currency': currency,
           'order_id': order_id,
           'amount': amount,
+          'callback_url': callback_url,
           'facilitator': facilitator,
           'autocapture': autocapture,
-          'testmode': testmode
+          'testmode': testmode,
         },
       );
 
@@ -257,6 +258,42 @@ class Pensopay {
 
       print(result.toString());
       return Subscription.fromMap(result);
+    } on PlatformException catch (error) {
+      switch (error.code) {
+        case "0":
+          throw PensoPaySetupException(error.message!);
+        case "1":
+          throw CreatePaymentException(error.details);
+        case "2":
+          throw CreatePaymentLinkException(error.details);
+        case "3":
+          throw ActivityException(error.details);
+        case "4":
+          throw ActivityFailureException(error.details);
+        case "5":
+          throw PaymentFailureException(error.details);
+        default:
+          rethrow;
+      }
+    }
+  }
+
+  static Future<Payment> createSubscriptionPayment({required int subscription_id, required String currency, required String order_id, required int amount, String? callback_url, bool testmode = false,}) async {
+    try {
+      final result = await _channel.invokeMethod(
+        'recurringSubscription',
+        <String, dynamic>{
+          'subscription_id': subscription_id,
+          'currency': currency,
+          'order_id': order_id,
+          'amount': amount,
+          'callback_url': callback_url,
+          'testmode': testmode,
+        },
+      );
+
+      print(result.toString());
+      return Payment.fromMap(result);
     } on PlatformException catch (error) {
       switch (error.code) {
         case "0":

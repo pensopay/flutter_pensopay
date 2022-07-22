@@ -84,6 +84,16 @@ class _MyHomePageState extends State<MyHomePage> {
     //   print(error.toString());
     // }
 
+    try {
+      Pensopay.createSubscriptionPayment(subscription_id: 1000096, currency: "DKK", order_id: "recurring-" + randomNumber.toString(), amount: 500, testmode: true).then((payment) {
+        print(payment.id);
+        print(payment);
+      });
+    } catch (error) {
+      print("CREATE MANDATE ERROR");
+      print(error.toString());
+    }
+
     // Update subscription
     // try {
     //   Pensopay.updateSubscription(
@@ -94,15 +104,15 @@ class _MyHomePageState extends State<MyHomePage> {
     //   print("UPDATE SUBSCRIPTION ERROR");
     //   print(error.toString());
     // }
-
-    try {
-      Pensopay.cancelSubscription(
-          id: 1000094
-      );
-    } catch (error) {
-      print("CANCEL SUBSCRIPTION ERROR");
-      print(error.toString());
-    }
+    //
+    // try {
+    //   Pensopay.cancelSubscription(
+    //       id: 1000094
+    //   );
+    // } catch (error) {
+    //   print("CANCEL SUBSCRIPTION ERROR");
+    //   print(error.toString());
+    // }
 
 
     // Create payment

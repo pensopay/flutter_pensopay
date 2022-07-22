@@ -3,8 +3,6 @@ package com.flutter.pensopay
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.src.main.kotlin.com.flutter.pensopay.networking.pensopayapi.pensopaylink.subscriptions.PPUpdateSubscriptionParameters
-import android.src.main.kotlin.com.flutter.pensopay.networking.pensopayapi.pensopaylink.subscriptions.PPUpdateSubscriptionRequest
 import androidx.annotation.NonNull
 import com.flutter.pensopay.networking.pensopayapi.pensopaylink.mandate.PPCreateMandateParameters
 import com.flutter.pensopay.networking.pensopayapi.pensopaylink.mandate.PPCreateMandateRequest
@@ -23,10 +21,7 @@ import com.flutter.pensopay.networking.pensopayapi.pensopaylink.models.PPPayment
 import com.flutter.pensopay.networking.pensopayapi.pensopaylink.models.PPPaymentLink
 import com.flutter.pensopay.networking.pensopayapi.pensopaylink.models.PPSubscription
 import com.flutter.pensopay.networking.pensopayapi.pensopaylink.payments.*
-import com.flutter.pensopay.networking.pensopayapi.pensopaylink.subscriptions.PPCancelSubscriptionRequest
-import com.flutter.pensopay.networking.pensopayapi.pensopaylink.subscriptions.PPCreateSubscriptionParameters
-import com.flutter.pensopay.networking.pensopayapi.pensopaylink.subscriptions.PPCreateSubscriptionRequest
-import com.flutter.pensopay.networking.pensopayapi.pensopaylink.subscriptions.PPGetSubscriptionRequest
+import com.flutter.pensopay.networking.pensopayapi.pensopaylink.subscriptions.*
 
 /** PensoPayPlugin */
 class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRegistry.ActivityResultListener {
@@ -156,9 +151,10 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
                 val order_id = call.argument<String>("order_id")!!
                 val amount = call.argument<Int>("amount")!!
                 val facilitator = call.argument<String>("facilitator")!!
+                val callback_url = call.argument<String>("callback_url")
                 val autocapture = call.argument<Boolean>("autocapture")
                 val testmode = call.argument<Boolean>("testmode")
-                createPayment(currency, order_id, amount, facilitator, autocapture, testmode)
+                createPayment(currency, order_id, amount, facilitator, callback_url, autocapture, testmode)
             }
             METHOD_CALL_GET_PAYMENT -> {
                 val payment_id = call.argument<Int>("payment_id")!!
@@ -205,14 +201,13 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
                 cancelSubscription(id)
             }
             METHOD_CALL_RECURRING_SUBSCRIPTION -> {
-                val id = call.argument<Int>("id")!!
+                val subscription_id = call.argument<Int>("subscription_id")!!
                 val order_id = call.argument<String>("order_id")!!
                 val currency = call.argument<String>("currency")!!
                 val amount = call.argument<Int>("amount")!!
-                val facilitator = call.argument<String>("facilitator")!!
-                val autocapture = call.argument<Boolean>("autocapture")
+                val callback_url = call.argument<String>("callback_url")
                 val testmode = call.argument<Boolean>("testmode")
-//                recurringSubscription(id, currency, order_id, amount, facilitator, autocapture, testmode)
+                recurringSubscription(subscription_id, currency, order_id, amount, callback_url, testmode)
             }
             // Mandate methods
             METHOD_CALL_CREATE_MANDATE -> {
@@ -233,8 +228,8 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
         PensoPay.init(apiKey, context)
     }
 
-    private fun createPayment(currency: String, order_id: String, amount: Int, facilitator: String, autocapture: Boolean?, testmode: Boolean?) {
-        val createPaymentParams = PPCreatePaymentParameters(amount, currency, order_id, facilitator, autocapture as Boolean, testmode as Boolean)
+    private fun createPayment(currency: String, order_id: String, amount: Int, facilitator: String, callback_url: String?, autocapture: Boolean?, testmode: Boolean?) {
+        val createPaymentParams = PPCreatePaymentParameters(amount, currency, order_id, facilitator, callback_url, autocapture as Boolean, testmode as Boolean)
         val createPaymentRequest = PPCreatePaymentRequest(createPaymentParams)
 
         PensoPay.log(amount.toString())
@@ -422,6 +417,30 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
                     currentType = "subscription"
 
                     pendingResult?.success(convertPPSubsriptionToMap(subscription))
+                },
+                errorListener = { _, message, error ->
+                    PensoPay.log(message.toString())
+                    PensoPay.log(error.toString())
+                    pendingResult?.error(CREATE_PAYMENT_ERROR, message, error?.message)
+                }
+            )
+        } catch (exception: Exception) {
+            PensoPay.log(exception.message.toString())
+            pendingResult?.error(PENSO_PAY_SETUP_ERROR, exception.message, exception.cause)
+        }
+    }
+
+    private fun recurringSubscription(id: Int, currency: String, order_id: String, amount: Int, callback_url: String?, testmode: Boolean?) {
+        val recurringSubscriptionParams = PPRecurringSubscriptionParameters(id, amount, currency, order_id, callback_url, testmode)
+        val recurringSubscriptionRequest = PPRecurringSubscriptionRequest(recurringSubscriptionParams)
+
+        try {
+            recurringSubscriptionRequest.sendRequest(
+                listener = { payment ->
+                    currentPaymentId = payment.id
+                    currentType = "payment"
+
+                    pendingResult?.success(convertPPPaymentToMap(payment))
                 },
                 errorListener = { _, message, error ->
                     PensoPay.log(message.toString())

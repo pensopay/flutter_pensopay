@@ -1,4 +1,4 @@
-package android.src.main.kotlin.com.flutter.pensopay.networking.pensopayapi.pensopaylink.subscriptions
+package com.flutter.pensopay.networking.pensopayapi.pensopaylink.subscriptions
 
 import com.android.volley.Request
 import com.flutter.pensopay.networking.pensopayapi.PPrequest
