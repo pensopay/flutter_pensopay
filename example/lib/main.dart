@@ -60,29 +60,42 @@ class _MyHomePageState extends State<MyHomePage> {
     Random random = new Random();
     int randomNumber = random.nextInt(10000)+1000;
 
+    // Create subscription
+    // try {
+    //   Pensopay.createSubscription(
+    //       subscription_id: "test-" + randomNumber.toString(),
+    //       amount: 500,
+    //       currency: "DKK",
+    //       description: "Some test fra Android SDK"
+    //   ).then((subscription) {
+    //     print("CREATE SUBSCRIPTION SUCCESS");
+    //     print(subscription.description);
+    //     Pensopay.createMandate(
+    //       subscription_id: subscription.id,
+    //       mandate_id: subscription.subscription_id,
+    //       facilitator: "quickpay"
+    //     ).then((mandate) {
+    //       print("CREATE MANDATE SUCCESS");
+    //       print(mandate.id);
+    //     });
+    //   });
+    // } catch (error) {
+    //   print("CREATE MANDATE ERROR");
+    //   print(error.toString());
+    // }
+
     try {
-      Pensopay.createSubscription(
-          subscription_id: "test-" + randomNumber.toString(),
-          amount: 500,
-          currency: "DKK",
-          description: "Some test fra Android SDK"
-      ).then((subscription) {
-        print("CREATE SUBSCRIPTION SUCCESS");
-        print(subscription.description);
-        Pensopay.createMandate(
-          subscription_id: subscription.id,
-          mandate_id: subscription.subscription_id,
-          facilitator: "quickpay"
-        ).then((mandate) {
-          print("CREATE MANDATE SUCCESS");
-          print(mandate.id);
-        });
-      });
+      Pensopay.updateSubscription(
+        id: 1000094,
+        description: "Some test from Android SDK"
+      );
     } catch (error) {
-      print("CREATE MANDATE ERROR");
+      print("UPDATE SUBSCRIPTION ERROR");
       print(error.toString());
     }
 
+
+    // Create payment
     // try {
     //   Pensopay.createPayment(
     //     currency: 'DKK',

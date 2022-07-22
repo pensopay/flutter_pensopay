@@ -179,6 +179,42 @@ class Pensopay {
     }
   }
 
+  static Future<Subscription> updateSubscription({required int id, String? subscription_id, int? amount, String? currency, String? description, String? callback_url}) async {
+    try {
+      final result = await _channel.invokeMethod(
+        'updateSubscription',
+        <String, dynamic>{
+          'id': id,
+          'subscription_id': subscription_id,
+          'amount': amount,
+          'currency': currency,
+          'description': description,
+          'callback_url': callback_url,
+        },
+      );
+
+      print(result.toString());
+      return Subscription.fromMap(result);
+    } on PlatformException catch (error) {
+      switch (error.code) {
+        case "0":
+          throw PensoPaySetupException(error.message!);
+        case "1":
+          throw CreatePaymentException(error.details);
+        case "2":
+          throw CreatePaymentLinkException(error.details);
+        case "3":
+          throw ActivityException(error.details);
+        case "4":
+          throw ActivityFailureException(error.details);
+        case "5":
+          throw PaymentFailureException(error.details);
+        default:
+          rethrow;
+      }
+    }
+  }
+
   static Future<Mandate> createMandate({required int subscription_id, required String mandate_id, required String facilitator}) async {
     try {
       final result = await _channel.invokeMethod(
