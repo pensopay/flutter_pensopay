@@ -84,13 +84,23 @@ class _MyHomePageState extends State<MyHomePage> {
     //   print(error.toString());
     // }
 
+    // Update subscription
+    // try {
+    //   Pensopay.updateSubscription(
+    //     id: 1000094,
+    //     description: "Some test from Android SDK"
+    //   );
+    // } catch (error) {
+    //   print("UPDATE SUBSCRIPTION ERROR");
+    //   print(error.toString());
+    // }
+
     try {
-      Pensopay.updateSubscription(
-        id: 1000094,
-        description: "Some test from Android SDK"
+      Pensopay.cancelSubscription(
+          id: 1000094
       );
     } catch (error) {
-      print("UPDATE SUBSCRIPTION ERROR");
+      print("CANCEL SUBSCRIPTION ERROR");
       print(error.toString());
     }
 

@@ -23,6 +23,7 @@ import com.flutter.pensopay.networking.pensopayapi.pensopaylink.models.PPPayment
 import com.flutter.pensopay.networking.pensopayapi.pensopaylink.models.PPPaymentLink
 import com.flutter.pensopay.networking.pensopayapi.pensopaylink.models.PPSubscription
 import com.flutter.pensopay.networking.pensopayapi.pensopaylink.payments.*
+import com.flutter.pensopay.networking.pensopayapi.pensopaylink.subscriptions.PPCancelSubscriptionRequest
 import com.flutter.pensopay.networking.pensopayapi.pensopaylink.subscriptions.PPCreateSubscriptionParameters
 import com.flutter.pensopay.networking.pensopayapi.pensopaylink.subscriptions.PPCreateSubscriptionRequest
 import com.flutter.pensopay.networking.pensopayapi.pensopaylink.subscriptions.PPGetSubscriptionRequest
@@ -200,8 +201,8 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
                 updateSubscription(id, subscription_id, amount, currency, description, callback_url)
             }
             METHOD_CALL_CANCEL_SUBSCRIPTION -> {
-                val subscription_id = call.argument<Int>("subscription_id")!!
-//                cancelSubscription(subscription_id)
+                val id = call.argument<Int>("id")!!
+                cancelSubscription(id)
             }
             METHOD_CALL_RECURRING_SUBSCRIPTION -> {
                 val id = call.argument<Int>("id")!!
@@ -375,6 +376,26 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
 
         try {
             getSubscriptionRequest.sendRequest(
+                listener = { subscription ->
+                    pendingResult?.success(convertPPSubsriptionToMap(subscription))
+                },
+                errorListener = { _, message, error ->
+                    PensoPay.log(message.toString())
+                    PensoPay.log(error.toString())
+                    pendingResult?.error(CREATE_PAYMENT_ERROR, message, error?.message)
+                }
+            )
+        } catch (exception: Exception) {
+            PensoPay.log(exception.message.toString())
+            pendingResult?.error(PENSO_PAY_SETUP_ERROR, exception.message, exception.cause)
+        }
+    }
+
+    private fun cancelSubscription(id: Int) {
+        val cancelSubscriptionRequest = PPCancelSubscriptionRequest(id)
+
+        try {
+            cancelSubscriptionRequest.sendRequest(
                 listener = { subscription ->
                     pendingResult?.success(convertPPSubsriptionToMap(subscription))
                 },

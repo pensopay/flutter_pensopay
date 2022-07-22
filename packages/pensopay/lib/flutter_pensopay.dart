@@ -179,6 +179,68 @@ class Pensopay {
     }
   }
 
+  static Future<Subscription> getSubscription({required int id}) async {
+    try {
+      final result = await _channel.invokeMethod(
+        'getSubscription',
+        <String, dynamic>{
+          'id': id,
+        },
+      );
+
+      print(result.toString());
+      return Subscription.fromMap(result);
+    } on PlatformException catch (error) {
+      switch (error.code) {
+        case "0":
+          throw PensoPaySetupException(error.message!);
+        case "1":
+          throw CreatePaymentException(error.details);
+        case "2":
+          throw CreatePaymentLinkException(error.details);
+        case "3":
+          throw ActivityException(error.details);
+        case "4":
+          throw ActivityFailureException(error.details);
+        case "5":
+          throw PaymentFailureException(error.details);
+        default:
+          rethrow;
+      }
+    }
+  }
+
+  static Future<Subscription> cancelSubscription({required int id}) async {
+    try {
+      final result = await _channel.invokeMethod(
+        'cancelSubscription',
+        <String, dynamic>{
+          'id': id,
+        },
+      );
+
+      print(result.toString());
+      return Subscription.fromMap(result);
+    } on PlatformException catch (error) {
+      switch (error.code) {
+        case "0":
+          throw PensoPaySetupException(error.message!);
+        case "1":
+          throw CreatePaymentException(error.details);
+        case "2":
+          throw CreatePaymentLinkException(error.details);
+        case "3":
+          throw ActivityException(error.details);
+        case "4":
+          throw ActivityFailureException(error.details);
+        case "5":
+          throw PaymentFailureException(error.details);
+        default:
+          rethrow;
+      }
+    }
+  }
+
   static Future<Subscription> updateSubscription({required int id, String? subscription_id, int? amount, String? currency, String? description, String? callback_url}) async {
     try {
       final result = await _channel.invokeMethod(
