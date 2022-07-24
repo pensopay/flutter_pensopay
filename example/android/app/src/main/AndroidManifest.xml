@@ -33,6 +33,6 @@
 
         <activity
             android:name="com.flutter.pensopay.PensoPayActivity"
-            android:theme="@style/Theme.AppCompat"/>
+            android:theme="@style/PensoPayBar"/>
     </application>
 </manifest>
