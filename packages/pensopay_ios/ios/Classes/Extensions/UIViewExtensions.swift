@@ -1,9 +1,9 @@
 //
 //  UIViewExtensions.swift
-//  QuickPayExample
+//  PensopayExample
 //
-//  Created on 15/03/2019.
-//  Copyright © 2019 QuickPay. All rights reserved.
+//  Created on 07/26/2022
+//  Copyright © 2022 Pensopay. All rights reserved.
 //
 
 import UIKit

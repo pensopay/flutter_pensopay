@@ -84,15 +84,15 @@ class _MyHomePageState extends State<MyHomePage> {
     //   print(error.toString());
     // }
 
-    try {
-      Pensopay.createSubscriptionPayment(subscription_id: 1000096, currency: "DKK", order_id: "recurring-" + randomNumber.toString(), amount: 500, testmode: true).then((payment) {
-        print(payment.id);
-        print(payment);
-      });
-    } catch (error) {
-      print("CREATE MANDATE ERROR");
-      print(error.toString());
-    }
+    //try {
+    //  Pensopay.createSubscriptionPayment(subscription_id: 1000096, currency: "DKK", order_id: "recurring-" + randomNumber.toString(), amount: 500, testmode: true).then((payment) {
+    //    print(payment.id);
+    //    print(payment);
+    //  });
+    //} catch (error) {
+    //  print("CREATE MANDATE ERROR");
+    //  print(error.toString());
+    //}
 
     // Update subscription
     // try {
@@ -115,49 +115,52 @@ class _MyHomePageState extends State<MyHomePage> {
     // }
 
 
-    // Create payment
-    // try {
-    //   Pensopay.createPayment(
-    //     currency: 'DKK',
-    //     order_id: "first-" + randomNumber.toString(),
-    //     amount: 500,
-    //     facilitator: 'quickpay',
-    //     testmode: true
-    //   ).then((payment) {
-    //     print("CREATE SUCCESS");
-    //     print(payment.id);
-    //     print(payment.order_id);
-    //
-    //     try {
-    //       Pensopay.capturePayment(
-    //         payment_id: payment.id
-    //       ).then((payment) {
-    //         print("CAPTURE SUCCESS");
-    //         print(payment.id);
-    //         print(payment.order_id);
-    //
-    //         try {
-    //           Pensopay.refundPayment(
-    //             payment_id: payment.id
-    //           ).then((payment) {
-    //             print("REFUND SUCCESS");
-    //             print(payment.id);
-    //             print(payment.order_id);
-    //           });
-    //         } catch (error) {
-    //           print("REFUND ERROR");
-    //           print(error.toString());
-    //         }
-    //       });
-    //     } catch (error) {
-    //       print("CAPTURE ERROR");
-    //       print(error.toString());
-    //     }
-    //   });
-    // } catch (error) {
-    //   print("CREATE ERROR");
-    //   print(error.toString());
-    // }
+    //Create payment
+    print("CLICK");
+
+    try {
+      print("GOT HERE");
+      Pensopay.createPayment(
+        currency: 'DKK',
+        order_id: "first-" + randomNumber.toString(),
+        amount: 500,
+        facilitator: 'quickpay',
+        testmode: true
+      ).then((payment) {
+        print("CREATE SUCCESS");
+        print(payment.id);
+        print(payment.order_id);
+
+        try {
+          Pensopay.capturePayment(
+            payment_id: payment.id
+          ).then((payment) {
+            print("CAPTURE SUCCESS");
+            print(payment.id);
+            print(payment.order_id);
+
+            try {
+              Pensopay.refundPayment(
+                payment_id: payment.id
+              ).then((payment) {
+                print("REFUND SUCCESS");
+                print(payment.id);
+                print(payment.order_id);
+              });
+            } catch (error) {
+              print("REFUND ERROR");
+              print(error.toString());
+            }
+          });
+        } catch (error) {
+          print("CAPTURE ERROR");
+          print(error.toString());
+        }
+      });
+    } catch (error) {
+      print("CREATE ERROR");
+      print(error.toString());
+    }
   }
 
   @override

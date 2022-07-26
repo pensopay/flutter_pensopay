@@ -1,9 +1,9 @@
 //
 //  URLExtensions.swift
-//  QuickPaySDK
+//  PensopaySDK
 //
-//  Created on 11/02/2021
-//  Copyright © 2021 QuickPay. All rights reserved.
+//  Created on 07/26/2022
+//  Copyright © 2022 Pensopay. All rights reserved.
 //
 
 import Foundation
