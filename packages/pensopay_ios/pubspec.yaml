@@ -22,4 +22,4 @@ flutter:
   plugin:
     platforms:
       ios:
-        pluginClass: PensopayIosPlugin
+        pluginClass: PensopayPlugin
