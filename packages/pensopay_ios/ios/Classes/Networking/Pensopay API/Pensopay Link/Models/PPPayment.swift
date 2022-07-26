@@ -11,35 +11,27 @@ import Foundation
 public class PPPayment: Codable {
     
     // MARK: - Properties
-    
+
     public var id: Int
-    public var merchant_id: Int
     public var order_id: String
-    public var accepted: Bool
     public var type: String
-    public var text_on_statement: String?
+    public var amount: Int
+    public var captured: Int
+    public var refunded: Int
     public var currency: String
     public var state: String
-    public var test_mode: Bool
+    public var facilitator: String
+    public var reference: Int
+    public var testmode: Bool
+    public var autocapture: Bool
+    public var link: String
+    public var callback_url: String?
+    public var success_url: String?
+    public var cancel_url: String?
+    public var order: Array<String>?
+    public var variables: Array<String>?
+    public var expires_at: String
     public var created_at: String
     public var updated_at: String
-    public var balance: Int
-    
-    public var branding_id: String?
-    public var acquirer: String?
-    public var facilitator: String?
-    public var retented_at: String?
-    public var fee: Int?
-    public var subscriptionId: Int?
-    public var deadline_at: String?
-
-    public var operations: Array<PPOperation>?
-    public var shipping_address: PPAddress?
-    public var invoice_address: PPAddress?
-    public var basket: Array<PPBasket>?
-    public var shipping: PPShipping?
-    public var metadata: PPMetadata?
-    public var link: PPPaymentLink?
-    public var shopsystem: PPShopSystem?
     
 }

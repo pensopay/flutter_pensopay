@@ -25,6 +25,10 @@ public class PPCreatePaymentRequest: PPRequest {
     // MARK: - URL Request
     
     public func sendRequest(success: @escaping (_ result: PPPayment) -> Void, failure: ((_ data: Data?, _ response: URLResponse?, _ error: Error?) -> Void)?) {
+
+        parameters.success_url = "https://pensopay.payment.success"
+        parameters.cancel_url = "https://pensopay.payment.failure"
+
         guard let url = URL(string: "\(PensopayAPIBaseUrl)/payment"), let postData = try? JSONEncoder().encode(parameters) else {
             return
         }
@@ -60,6 +64,9 @@ public class PPCreatePaymentParameters: Codable {
     public var invoice_address: PPAddress?
     public var shipping_address:PPAddress?
     public var shopSystem:PPShopSystem?
+
+    public var success_url: String
+    public var cancel_url: String
     
     
     // MARK: Init
@@ -72,6 +79,8 @@ public class PPCreatePaymentParameters: Codable {
         self.callback_url = callback_url
         self.autocapture = autocapture
         self.testmode = testmode
+        self.success_url = "https://pensopay.payment.success"
+        self.cancel_url = "https://pensopay.payment.failure"
         
         self.shopSystem = PPShopSystem(name: "iOS-SDK", version: "0.0.1")
     }

@@ -55,35 +55,35 @@ public class Pensopay: NSObject {
         //fetchAquires()
     }
     
-    public static func fetchAquires() {
-        isInitializing = true
-        initializeDelegate?.initializationStarted()
-
-        let dispatchGroup = DispatchGroup();
-
-        dispatchGroup.enter()
-        isMobilePayEnabled { (enabled) in
-            isMobilePayEnabled = enabled
-            dispatchGroup.leave()
-        }
-        
-        dispatchGroup.enter()
-        isApplePayEnabled { (enabled) in
-            isApplePayEnabled = enabled
-            dispatchGroup.leave()
-        }
-        
-        dispatchGroup.enter()
-        isVippsEnabled { (enabled) in
-            isVippsEnabled = enabled
-            dispatchGroup.leave()
-        }
-        
-        dispatchGroup.notify(queue: .global(qos: DispatchQoS.QoSClass.background)) {
-            isInitializing = false
-            initializeDelegate?.initializationCompleted()
-        }
-    }
+    //public static func fetchAquires() {
+    //    isInitializing = true
+    //    initializeDelegate?.initializationStarted()
+//
+    //    let dispatchGroup = DispatchGroup();
+//
+    //    dispatchGroup.enter()
+    //    isMobilePayEnabled { (enabled) in
+    //        isMobilePayEnabled = enabled
+    //        dispatchGroup.leave()
+    //    }
+    //
+    //    dispatchGroup.enter()
+    //    isApplePayEnabled { (enabled) in
+    //        isApplePayEnabled = enabled
+    //        dispatchGroup.leave()
+    //    }
+    //
+    //    dispatchGroup.enter()
+    //    isVippsEnabled { (enabled) in
+    //        isVippsEnabled = enabled
+    //        dispatchGroup.leave()
+    //    }
+    //
+    //    dispatchGroup.notify(queue: .global(qos: DispatchQoS.QoSClass.background)) {
+    //        isInitializing = false
+    //        initializeDelegate?.initializationCompleted()
+    //    }
+    //}
     
     
     // MARK: API
@@ -160,7 +160,7 @@ public class Pensopay: NSObject {
     
     @objc static func applicationDidBecomeActive() {
         stopObservingLifecycle()
-        onCallbackFromAppSwitch()
+        //onCallbackFromAppSwitch()
     }
 }
 
@@ -168,175 +168,175 @@ public class Pensopay: NSObject {
 
 // MARK: - App Switch
 
-public extension Pensopay {
-    private static var appSwitchCompletion: ((_ paymentId: Int) -> Void)?
-    private static var appSwitchFailure: (() -> Void)?
-    private static var appSwitchPaymentId: Int?
-    
-    static func onCallbackFromAppSwitch() {
-        guard let paymentId = appSwitchPaymentId, let completion = appSwitchCompletion else {
-            appSwitchFailure?()
-            
-            appSwitchCompletion = nil
-            appSwitchFailure = nil
-            appSwitchPaymentId = nil
-            return
-        }
-
-        completion(paymentId)
-
-        appSwitchCompletion = nil
-        appSwitchFailure = nil
-        appSwitchPaymentId = nil
-    }
-}
-
-
-
-// MARK: - Vipps
-public extension Pensopay {
-    
-    //MARK: Properties
-    
-    private static let vippsScheme = "vipps://"
-    private static let vippsMTScheme = "vippsmt://"
-    
-    
-    // MARK: - API
-    
-    static func authorizeWithVipps(payment: PPPayment, completion: ((_ paymentId: Int) -> Void)?, failure: (() -> Void)?) {
-        guard let vippsUrlString = payment.operations?[0].data?["redirect_url"] else {
-            Pensopay.logDelegate?.log("The operations of the Payment does not contain the needed information to authorize through Vipps")
-            failure?()
-            return
-        }
-        
-        if let vippsUrl = URL(string: vippsUrlString) {
-            if canOpenUrl(url: vippsUrl) {
-                if completion != nil {
-                    appSwitchCompletion = completion
-                    appSwitchFailure = failure
-                    appSwitchPaymentId = payment.id
-                    
-                    startObservingLifecycle()
-                }
-                
-                OperationQueue.main.addOperation {
-                    UIApplication.shared.open(vippsUrl)
-                }
-                
-                return
-            }
-            else {
-                Pensopay.logDelegate?.log("Cannot open Vipps App.")
-                Pensopay.logDelegate?.log("Make sure the 'vipps://' URL Scheme is added to your plist and make sure the Vipps App is installed on the users phone before presenting this payment option.")
-                Pensopay.logDelegate?.log("You can test if Vipps can be opened by calling Pensopay.isVippsAvailableOnDevice()")
-            }
-        }
-        
-        failure?()
-    }
-}
-
-
-
-// MARK: - MobilePay Online
-public extension Pensopay {
-    
-    //MARK: Properties
-    
-    private static let mobilePayOnlineScheme = "mobilepayonline://"
-    private static let mobilePayUrlSource = "com.danskebank.mobilepay"
-        
-
-    // MARK: API
-    
-    static func authorizeWithMobilePay(payment: PPPayment, completion: ((_ paymentId: Int) -> Void)?, failure: (() -> Void)?) {
-        guard let redirectURLString = payment.operations?[0].data?["redirect_url"], let redirectURL = URL(string: redirectURLString) else {
-            Pensopay.logDelegate?.log("The operations of the Payment does not contain the needed information to authorize through MobilePay")
-            failure?()
-            return
-        }
-        
-        if let mobilePayToken = redirectURL.valueOf("id"), let mobilePayUrl = URL(string: "\(mobilePayOnlineScheme)online?paymentid=\(mobilePayToken)") {
-            if canOpenUrl(url: mobilePayUrl) {
-                if completion != nil {
-                    appSwitchCompletion = completion
-                    appSwitchFailure = failure
-                    appSwitchPaymentId = payment.id
-                    
-                    startObservingLifecycle()
-                }
-                
-                OperationQueue.main.addOperation {
-                    UIApplication.shared.open(mobilePayUrl)
-                }
-                
-                return
-            }
-            else {
-                Pensopay.logDelegate?.log("Cannot open MobilePay App.")
-                Pensopay.logDelegate?.log("Make sure the 'mobilepayonline://' URL Scheme is added to your plist and make sure the MobilePay App is installed on the users phone before presenting this payment option.")
-                Pensopay.logDelegate?.log("You can test if MobilePay can be opened by calling Pensopay.isMobilePayAvailableOnDevice()")
-            }
-        }
-        
-        failure?()
-    }
-        
-}
-
-
-// MARK: - Capabilities
-
-// Apple
-extension Pensopay {
-    
-    static func isApplePayEnabled(completion: @escaping (_ enabled: Bool)->Void) {
-        PPGetAcquireSettingsClearhausRequest().sendRequest(success: { (settings) in
-            completion(settings.active && settings.apple_pay)
-        }) { (data, response, error) in
-            completion(false)
-        }
-    }
-    
-    public static func isApplePayAvailableOnDevice() -> Bool {
-        return PKPaymentAuthorizationController.canMakePayments()
-    }
-    
-}
-
-// MobilePay
-extension Pensopay {
-    
-    static func isMobilePayEnabled(completion: @escaping (_ enabled: Bool)->Void) {
-        PPGetAcquireSettingsMobilePayRequest().sendRequest(success: { (settings) in
-            completion(settings.active)
-        }) { (data, response, error) in
-            completion(false)
-        }
-    }
-
-    public static func isMobilePayAvailableOnDevice() -> Bool {
-        return canOpenUrl(url: mobilePayOnlineScheme)
-    }
-    
-}
-
-// Vipps
-extension Pensopay {
-    
-    static func isVippsEnabled(completion: @escaping (_ enabled: Bool)->Void) {
-        PPGetAcquireSettingsVippsRequest().sendRequest(success: { (settings) in
-            completion(settings.active)
-        }) { (data, response, error) in
-            completion(false)
-        }
-    }
-
-    
-    public static func isVippsAvailableOnDevice() -> Bool {
-        return canOpenUrl(url: vippsScheme)
-    }
-    
-}
+//public extension Pensopay {
+//    private static var appSwitchCompletion: ((_ paymentId: Int) -> Void)?
+//    private static var appSwitchFailure: (() -> Void)?
+//    private static var appSwitchPaymentId: Int?
+//
+//    static func onCallbackFromAppSwitch() {
+//        guard let paymentId = appSwitchPaymentId, let completion = appSwitchCompletion else {
+//            appSwitchFailure?()
+//
+//            appSwitchCompletion = nil
+//            appSwitchFailure = nil
+//            appSwitchPaymentId = nil
+//            return
+//        }
+//
+//        completion(paymentId)
+//
+//        appSwitchCompletion = nil
+//        appSwitchFailure = nil
+//        appSwitchPaymentId = nil
+//    }
+//}
+//
+//
+//
+//// MARK: - Vipps
+//public extension Pensopay {
+//
+//    //MARK: Properties
+//
+//    private static let vippsScheme = "vipps://"
+//    private static let vippsMTScheme = "vippsmt://"
+//
+//
+//    // MARK: - API
+//
+//    static func authorizeWithVipps(payment: PPPayment, completion: ((_ paymentId: Int) -> Void)?, failure: (() -> Void)?) {
+//        guard let vippsUrlString = payment.operations?[0].data?["redirect_url"] else {
+//            Pensopay.logDelegate?.log("The operations of the Payment does not contain the needed information to authorize through Vipps")
+//            failure?()
+//            return
+//        }
+//
+//        if let vippsUrl = URL(string: vippsUrlString) {
+//            if canOpenUrl(url: vippsUrl) {
+//                if completion != nil {
+//                    appSwitchCompletion = completion
+//                    appSwitchFailure = failure
+//                    appSwitchPaymentId = payment.id
+//
+//                    startObservingLifecycle()
+//                }
+//
+//                OperationQueue.main.addOperation {
+//                    UIApplication.shared.open(vippsUrl)
+//                }
+//
+//                return
+//            }
+//            else {
+//                Pensopay.logDelegate?.log("Cannot open Vipps App.")
+//                Pensopay.logDelegate?.log("Make sure the 'vipps://' URL Scheme is added to your plist and make sure the Vipps App is installed on the users phone before presenting this payment option.")
+//                Pensopay.logDelegate?.log("You can test if Vipps can be opened by calling Pensopay.isVippsAvailableOnDevice()")
+//            }
+//        }
+//
+//        failure?()
+//    }
+//}
+//
+//
+//
+//// MARK: - MobilePay Online
+//public extension Pensopay {
+//
+//    //MARK: Properties
+//
+//    private static let mobilePayOnlineScheme = "mobilepayonline://"
+//    private static let mobilePayUrlSource = "com.danskebank.mobilepay"
+//
+//
+//    // MARK: API
+//
+//    static func authorizeWithMobilePay(payment: PPPayment, completion: ((_ paymentId: Int) -> Void)?, failure: (() -> Void)?) {
+//        guard let redirectURLString = payment.operations?[0].data?["redirect_url"], let redirectURL = URL(string: redirectURLString) else {
+//            Pensopay.logDelegate?.log("The operations of the Payment does not contain the needed information to authorize through MobilePay")
+//            failure?()
+//            return
+//        }
+//
+//        if let mobilePayToken = redirectURL.valueOf("id"), let mobilePayUrl = URL(string: "\(mobilePayOnlineScheme)online?paymentid=\(mobilePayToken)") {
+//            if canOpenUrl(url: mobilePayUrl) {
+//                if completion != nil {
+//                    appSwitchCompletion = completion
+//                    appSwitchFailure = failure
+//                    appSwitchPaymentId = payment.id
+//
+//                    startObservingLifecycle()
+//                }
+//
+//                OperationQueue.main.addOperation {
+//                    UIApplication.shared.open(mobilePayUrl)
+//                }
+//
+//                return
+//            }
+//            else {
+//                Pensopay.logDelegate?.log("Cannot open MobilePay App.")
+//                Pensopay.logDelegate?.log("Make sure the 'mobilepayonline://' URL Scheme is added to your plist and make sure the MobilePay App is installed on the users phone before presenting this payment option.")
+//                Pensopay.logDelegate?.log("You can test if MobilePay can be opened by calling Pensopay.isMobilePayAvailableOnDevice()")
+//            }
+//        }
+//
+//        failure?()
+//    }
+//
+//}
+//
+//
+//// MARK: - Capabilities
+//
+//// Apple
+//extension Pensopay {
+//
+//    static func isApplePayEnabled(completion: @escaping (_ enabled: Bool)->Void) {
+//        PPGetAcquireSettingsClearhausRequest().sendRequest(success: { (settings) in
+//            completion(settings.active && settings.apple_pay)
+//        }) { (data, response, error) in
+//            completion(false)
+//        }
+//    }
+//
+//    public static func isApplePayAvailableOnDevice() -> Bool {
+//        return PKPaymentAuthorizationController.canMakePayments()
+//    }
+//
+//}
+//
+//// MobilePay
+//extension Pensopay {
+//
+//    static func isMobilePayEnabled(completion: @escaping (_ enabled: Bool)->Void) {
+//        PPGetAcquireSettingsMobilePayRequest().sendRequest(success: { (settings) in
+//            completion(settings.active)
+//        }) { (data, response, error) in
+//            completion(false)
+//        }
+//    }
+//
+//    public static func isMobilePayAvailableOnDevice() -> Bool {
+//        return canOpenUrl(url: mobilePayOnlineScheme)
+//    }
+//
+//}
+//
+//// Vipps
+//extension Pensopay {
+//
+//    static func isVippsEnabled(completion: @escaping (_ enabled: Bool)->Void) {
+//        PPGetAcquireSettingsVippsRequest().sendRequest(success: { (settings) in
+//            completion(settings.active)
+//        }) { (data, response, error) in
+//            completion(false)
+//        }
+//    }
+//
+//
+//    public static func isVippsAvailableOnDevice() -> Bool {
+//        return canOpenUrl(url: vippsScheme)
+//    }
+//
+//}
