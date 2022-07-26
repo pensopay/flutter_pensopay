@@ -21,7 +21,10 @@ public class PPPayment: Codable {
     public var currency: String
     public var state: String
     public var facilitator: String
-    public var reference: Int
+    public var reference: String {
+        get { reference }
+        set { reference = String(newValue) }
+    }
     public var testmode: Bool
     public var autocapture: Bool
     public var link: String
@@ -33,5 +36,4 @@ public class PPPayment: Codable {
     public var expires_at: String
     public var created_at: String
     public var updated_at: String
-    
 }

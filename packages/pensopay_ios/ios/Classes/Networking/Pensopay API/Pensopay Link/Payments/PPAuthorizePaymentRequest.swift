@@ -25,7 +25,7 @@ public class PPAuthorizePaymentRequest: PPRequest {
     // MARK: - URL Request
     
     public func sendRequest(success: @escaping (_ result: PPPayment) -> Void, failure: ((_ data: Data?, _ response: URLResponse?, _ error: Error?) -> Void)?) {
-        guard let url = URL(string: "\(PensopayAPIBaseUrl)/payments/\(parameters.id)/authorize"), let postData = try? JSONEncoder().encode(parameters) else {
+        guard let url = URL(string: "\(PensopayAPIBaseUrl)/payment/\(parameters.id)/authorize"), let postData = try? JSONEncoder().encode(parameters) else {
             return
         }
         
