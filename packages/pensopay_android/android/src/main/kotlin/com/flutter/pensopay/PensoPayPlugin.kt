@@ -64,6 +64,7 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
 
         // Mandate calls
         private const val METHOD_CALL_CREATE_MANDATE = "createMandate"
+        private const val METHOD_CALL_GET_MANDATE = "getMandate"
 
         private const val PENSO_PAY_SETUP_ERROR = "0"
         private const val CREATE_PAYMENT_ERROR = "1"
@@ -207,6 +208,12 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
                 val mandate_id = call.argument<String>("mandate_id")!!
                 val facilitator = call.argument<String>("facilitator")!!
                 createMandate(subscription_id, mandate_id, facilitator)
+            }
+
+            METHOD_CALL_GET_MANDATE -> {
+                val subscription_id = call.argument<Int>("subscription_id")!!
+                val mandate_id = call.argument<String>("mandate_id")!!
+                getMandate(subscription_id, mandate_id)
             }
             else -> result.notImplemented()
         }
@@ -480,6 +487,26 @@ class PensoPayPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
                     link.url = mandate.link
 
                     PensoPayActivity.openPensoPayPaymentWindow(activity, link)
+                },
+                errorListener = { _, message, error ->
+                    PensoPay.log(message.toString())
+                    PensoPay.log(error.toString())
+                    pendingResult?.error(CREATE_PAYMENT_ERROR, message, error?.message)
+                }
+            )
+        } catch (exception: Exception) {
+            PensoPay.log(exception.message.toString())
+            pendingResult?.error(PENSO_PAY_SETUP_ERROR, exception.message, exception.cause)
+        }
+    }
+
+    private fun getMandate(subscription_id: Int, mandate_id: String) {
+        val getMandateRequest = PPGetMandateRequest(subscription_id, mandate_id)
+
+        try {
+            getMandateRequest.sendRequest(
+                listener = { mandate ->
+                    pendingResult?.success(convertPPMandateToMap(mandate))
                 },
                 errorListener = { _, message, error ->
                     PensoPay.log(message.toString())

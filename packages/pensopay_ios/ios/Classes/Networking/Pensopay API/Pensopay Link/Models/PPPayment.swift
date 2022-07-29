@@ -21,10 +21,16 @@ public class PPPayment: Codable {
     public var currency: String
     public var state: String
     public var facilitator: String
-    public var reference: String {
-        get { reference }
-        set { reference = String(newValue) }
-    }
+
+    //public var reference: String {
+    //    get {
+    //        return reference
+    //    }
+    //    set (value) {
+    //        reference = String(value ?? "")
+    //    }
+    //}
+
     public var testmode: Bool
     public var autocapture: Bool
     public var link: String

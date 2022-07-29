@@ -1,5 +1,5 @@
 //
-//  PPAuthorizePayment.swift
+//  PPRefundPaymentRequest.swift
 //  PensopaySDK
 //
 //  Created on 07/26/2022
@@ -8,16 +8,16 @@
 
 import Foundation
 
-public class PPAuthorizePaymentRequest: PPRequest {
+public class PPRefundPaymentRequest: PPRequest {
     
     // MARK: - Properties
     
-    var parameters: PPAuthorizePaymentParams
+    var parameters: PPRefundPaymentParams
     
     
     // MARK: Init
     
-    public init(parameters: PPAuthorizePaymentParams) {
+    public init(parameters: PPRefundPaymentParams) {
         self.parameters = parameters
     }
     
@@ -25,7 +25,7 @@ public class PPAuthorizePaymentRequest: PPRequest {
     // MARK: - URL Request
     
     public func sendRequest(success: @escaping (_ result: PPPayment) -> Void, failure: ((_ data: Data?, _ response: URLResponse?, _ error: Error?) -> Void)?) {
-        guard let url = URL(string: "\(PensopayAPIBaseUrl)/payment/\(parameters.id)/authorize"), let postData = try? JSONEncoder().encode(parameters) else {
+        guard let url = URL(string: "\(PensopayAPIBaseUrl)/payment/\(parameters.id)/refund"), let postData = try? JSONEncoder().encode(parameters) else {
             return
         }
         
@@ -42,32 +42,16 @@ public class PPAuthorizePaymentRequest: PPRequest {
     
 }
 
-public class PPAuthorizePaymentParams: Codable {
+public class PPRefundPaymentParams: Codable {
     
     // MARK: - Properties
     
     public var id: Int
-    public var amount: Int
-    
-    public var PensopayCallbackUrl: String? // TODO: Must be encoded/decoded into 'Pensopay-Callback-Url'
-    public var synchronized: Bool?
-    public var vat_rate: Double?
-    public var mobile_number: String?
-    public var auto_capture: Bool?
-    public var acquirer: String?
-    public var autofee: Bool?
-    public var customer_ip: String?
-//    public var extras: Any?
-    public var zero_auth: Bool?
-    
-    public var card: PPCard?
-    public var nin: PPNin?
-    public var person: PPPerson?
+    public var amount: Int?
 
-    
     // MARK: - Init
     
-    public init(id: Int, amount: Int) {
+    public init(id: Int, amount: Int?) {
         self.id = id
         self.amount = amount
     }

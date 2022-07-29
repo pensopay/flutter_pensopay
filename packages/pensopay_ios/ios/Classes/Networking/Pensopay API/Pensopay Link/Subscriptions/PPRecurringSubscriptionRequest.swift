@@ -1,5 +1,5 @@
 //
-//  PPCreateSubscriptionRequest.swift
+//  PPRecurringSubscriptionRequest.swift
 //  PensopaySDK
 //
 //  Created on 07/26/2022
@@ -8,16 +8,16 @@
 
 import Foundation
 
-public class PPCreateSubscriptionRequest: PPRequest {
+public class PPRecurringSubscriptionRequest: PPRequest {
 
     // MARK: - Properties
     
-    var parameters: PPCreateSubscriptionParameters
+    var parameters: PPRecurringSubscriptionParams
     
     
     // MARK: Init
     
-    public init(parameters: PPCreateSubscriptionParameters) {
+    public init(parameters: PPRecurringSubscriptionParams) {
         self.parameters = parameters
     }
     
@@ -25,7 +25,7 @@ public class PPCreateSubscriptionRequest: PPRequest {
     // MARK: - URL Request
     
     public func sendRequest(success: @escaping (_ result: PPSubscription) -> Void, failure: ((_ data: Data?, _ response: URLResponse?, _ error: Error?) -> Void)?) {
-        guard let url = URL(string: "\(PensopayAPIBaseUrl)/subscription"), let postData = try? JSONEncoder().encode(parameters) else {
+        guard let url = URL(string: "\(PensopayAPIBaseUrl)/subscription/\(parameters.id)/payment"), let postData = try? JSONEncoder().encode(parameters) else {
             return
         }
 
@@ -41,26 +41,27 @@ public class PPCreateSubscriptionRequest: PPRequest {
     }
 }
 
-public class PPCreateSubscriptionParameters: Codable {
+public class PPRecurringSubscriptionParams: Codable {
 
     // MARK: - Properties
 
-    public var subscription_id: String
+    public var id: Int
     public var amount: Int
     public var currency: String
-    public var description: String
+    public var order_id: String
 
     public var callback_url: String?
+    public var testmode: Bool?
 
 
     // MARK: Init
 
-    public init(subscription_id: String, amount: Int, currency: String, description: String, callback_url: String?) {
-        self.subscription_id = subscription_id
+    public init(id: Int, amount: Int, currency: String, order_id: String, callback_url: String?, testmode: Bool?) {
+        self.id = id
         self.amount = amount
         self.currency = currency
-        self.description = description
-
+        self.order_id = order_id
         self.callback_url = callback_url
+        self.testmode = testmode
     }
 }
