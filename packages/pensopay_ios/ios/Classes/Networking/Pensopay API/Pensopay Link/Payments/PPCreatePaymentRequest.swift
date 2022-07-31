@@ -54,8 +54,8 @@ public class PPCreatePaymentParameters: Codable {
     public var amount: Int
     public var facilitator: String
     public var callback_url: String?
-    public var testmode: Int?
-    public var autocapture: Int?
+    public var testmode: Bool?
+    public var autocapture: Bool?
 
     public var branding_id: Int?
     public var text_on_statement: String?
@@ -71,7 +71,7 @@ public class PPCreatePaymentParameters: Codable {
     
     // MARK: Init
     
-    public init(currency: String, order_id: String, amount: Int, facilitator: String, callback_url: String?, autocapture: Int?, testmode: Int?) {
+    public init(currency: String, order_id: String, amount: Int, facilitator: String, callback_url: String?, autocapture: Bool?, testmode: Bool?) {
         self.currency = currency
         self.order_id = order_id
         self.amount = amount

@@ -11,7 +11,7 @@ class Payment {
   final String reference;
   final bool testmode;
   final bool autocapture;
-  final String link;
+  final String? link;
   final String? callback_url;
   final String success_url;
   final String cancel_url;
@@ -59,7 +59,7 @@ class Payment {
       reference: map['reference'] as String,
       testmode: map['testmode'] as bool,
       autocapture: map['autocapture'] as bool,
-      link: map['link'] as String,
+      link: map['link'] as String?,
       callback_url: map['callback_url'] as String?,
       success_url: map['success_url'] as String,
       cancel_url: map['cancel_url'] as String,

@@ -22,18 +22,16 @@ public class PPPayment: Codable {
     public var state: String
     public var facilitator: String
 
-    //public var reference: String {
-    //    get {
-    //        return reference
-    //    }
-    //    set (value) {
-    //        reference = String(value ?? "")
-    //    }
-    //}
+    var _reference: String?
+
+    public var reference: String {
+        set { _reference = "\(newValue)" }
+        get { return "\(_reference)" }
+    }
 
     public var testmode: Bool
     public var autocapture: Bool
-    public var link: String
+    public var link: String?
     public var callback_url: String?
     public var success_url: String?
     public var cancel_url: String?

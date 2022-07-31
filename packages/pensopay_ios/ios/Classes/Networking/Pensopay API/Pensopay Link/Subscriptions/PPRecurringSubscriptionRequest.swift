@@ -24,8 +24,12 @@ public class PPRecurringSubscriptionRequest: PPRequest {
     
     // MARK: - URL Request
     
-    public func sendRequest(success: @escaping (_ result: PPSubscription) -> Void, failure: ((_ data: Data?, _ response: URLResponse?, _ error: Error?) -> Void)?) {
-        guard let url = URL(string: "\(PensopayAPIBaseUrl)/subscription/\(parameters.id)/payment"), let postData = try? JSONEncoder().encode(parameters) else {
+    public func sendRequest(success: @escaping (_ result: PPPayment) -> Void, failure: ((_ data: Data?, _ response: URLResponse?, _ error: Error?) -> Void)?) {
+
+        parameters.success_url = "https://pensopay.payment.success"
+        parameters.cancel_url = "https://pensopay.payment.failure"
+
+        guard let url = URL(string: "\(PensopayAPIBaseUrl)/subscription/\(self.parameters.id)/payment"), let postData = try? JSONEncoder().encode(parameters) else {
             return
         }
 
@@ -53,6 +57,9 @@ public class PPRecurringSubscriptionParams: Codable {
     public var callback_url: String?
     public var testmode: Bool?
 
+    public var success_url: String
+    public var cancel_url: String
+
 
     // MARK: Init
 
@@ -63,5 +70,8 @@ public class PPRecurringSubscriptionParams: Codable {
         self.order_id = order_id
         self.callback_url = callback_url
         self.testmode = testmode
+
+        self.success_url = "https://pensopay.payment.success"
+        self.cancel_url = "https://pensopay.payment.failure"
     }
 }

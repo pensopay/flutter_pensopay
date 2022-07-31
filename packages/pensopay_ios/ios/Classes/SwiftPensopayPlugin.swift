@@ -61,8 +61,8 @@ public class SwiftPensopayPlugin: NSObject, FlutterPlugin {
                 guard let amount : Int = args.value(forKey: "amount") as? Int  else { return }
                 guard let facilitator : String = args.value(forKey: "facilitator") as? String  else { return }
                 let callback_url : String? = args.value(forKey: "callback_url") as? String
-                let autocapture : Int? = args.value(forKey: "autocapture") as? Int
-                let testmode : Int? = args.value(forKey: "testmode") as? Int
+                let autocapture : Bool? = args.value(forKey: "autocapture") as? Bool
+                let testmode : Bool? = args.value(forKey: "testmode") as? Bool
                 createPayment(currency: currency, order_id: order_id, amount: amount, facilitator: facilitator, callback_url: callback_url, autocapture: autocapture, testmode: testmode)
 
             case METHOD_CALL_GET_PAYMENT:
@@ -118,7 +118,6 @@ public class SwiftPensopayPlugin: NSObject, FlutterPlugin {
                 guard let order_id : String = args.value(forKey: "order_id") as? String  else { return }
                 guard let amount : Int = args.value(forKey: "amount") as? Int  else { return }
                 guard let currency : String = args.value(forKey: "currency") as? String  else { return }
-                guard let description : String = args.value(forKey: "description") as? String  else { return }
                 let callback_url : String? = args.value(forKey: "callback_url") as? String
                 let testmode : Bool? = args.value(forKey: "testmode") as? Bool
                 recurringSubscription(subscription_id: subscription_id, currency: currency, order_id: order_id, amount: amount, callback_url: callback_url, testmode: testmode)
@@ -144,7 +143,7 @@ public class SwiftPensopayPlugin: NSObject, FlutterPlugin {
         Pensopay.initWith(api_key: apiKey)
     }
 
-    private func createPayment(currency: String, order_id: String, amount: Int, facilitator: String, callback_url: String?, autocapture: Int?, testmode: Int?) {
+    private func createPayment(currency: String, order_id: String, amount: Int, facilitator: String, callback_url: String?, autocapture: Bool?, testmode: Bool?) {
         let createPaymentParams = PPCreatePaymentParameters(currency: currency, order_id: order_id, amount: amount, facilitator: facilitator, callback_url: callback_url, autocapture: autocapture, testmode: testmode)
         let createPaymentRequest = PPCreatePaymentRequest(parameters: createPaymentParams)
 
@@ -152,7 +151,7 @@ public class SwiftPensopayPlugin: NSObject, FlutterPlugin {
             self.currentId = payment.id
             self.currentType = "payment"
 
-            Pensopay.openPaymentLink(paymentUrl: payment.link, onCancel: {
+            Pensopay.openPaymentLink(paymentUrl: payment.link!, onCancel: {
                 self.pendingResult!(FlutterError(code: self.ACTIVITY_ERROR, message: "User cancel payment", details: "User cancel payment"))
             }, onResponse: { (success) in
                 if (success) {
@@ -296,9 +295,9 @@ public class SwiftPensopayPlugin: NSObject, FlutterPlugin {
         let recurringSubscriptionParams = PPRecurringSubscriptionParams(id: subscription_id, amount: amount, currency: currency, order_id: order_id, callback_url: callback_url, testmode: testmode)
         let recurringSubscriptionRequest = PPRecurringSubscriptionRequest(parameters: recurringSubscriptionParams)
 
-        recurringSubscriptionRequest.sendRequest(success: { (subscription) in
+        recurringSubscriptionRequest.sendRequest(success: { (payment) in
 
-            self.pendingResult!(self.convertPPSubsriptionToDictionary(subscription: subscription))
+            self.pendingResult!(self.convertPPPaymentToDictionary(payment: payment))
 
         }, failure: { (data, response, error) in
             self.pendingResult!(FlutterError(code: self.PAYMENT_FAILURE_ERROR, message: String(data: data!, encoding: String.Encoding.utf8)!, details: String(data: data!, encoding: String.Encoding.utf8)!))
@@ -361,7 +360,7 @@ public class SwiftPensopayPlugin: NSObject, FlutterPlugin {
            "currency": payment.currency,
            "state": payment.state,
            "facilitator": payment.facilitator,
-           //"reference": payment.reference,
+           "reference": payment.reference,
            "testmode": payment.testmode,
            "autocapture": payment.autocapture,
            "link": payment.link,
