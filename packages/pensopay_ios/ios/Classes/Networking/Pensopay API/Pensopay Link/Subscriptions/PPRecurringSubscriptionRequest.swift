@@ -29,7 +29,7 @@ public class PPRecurringSubscriptionRequest: PPRequest {
         parameters.success_url = "https://pensopay.payment.success"
         parameters.cancel_url = "https://pensopay.payment.failure"
 
-        guard let url = URL(string: "\(PensopayAPIBaseUrl)/subscription/\(self.parameters.id)/payment"), let postData = try? JSONEncoder().encode(parameters) else {
+        guard let url = URL(string: "\(PensopayAPIBaseUrl)/subscription/\(self.parameters.id)/payments"), let postData = try? JSONEncoder().encode(parameters) else {
             return
         }
 

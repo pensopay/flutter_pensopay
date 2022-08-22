@@ -6,7 +6,7 @@ import com.flutter.pensopay.networking.pensopayapi.pensopaylink.models.PPPayment
 import com.flutter.pensopay.networking.pensopayapi.pensopaylink.models.PPPerson
 import org.json.JSONObject
 
-class PPCreatePaymentSessionRequest(id: Int, params: PPCreatePaymentSessionParameters): PPrequest<PPPayment>(Request.Method.POST, "/payment/$id/session?synchronized", params, PPPayment::class.java)
+class PPCreatePaymentSessionRequest(id: Int, params: PPCreatePaymentSessionParameters): PPrequest<PPPayment>(Request.Method.POST, "/payments/$id/session?synchronized", params, PPPayment::class.java)
 
 class PPCreatePaymentSessionParameters(amount: Int): JSONObject() {
 

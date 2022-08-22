@@ -25,7 +25,7 @@ public class PPGetPaymentRequest : PPRequest {
     // MARK: - URL Request
     
     public func sendRequest(success: @escaping (_ result: PPPayment) -> Void, failure: ((_ data: Data?, _ response: URLResponse?, _ error: Error?) -> Void)?) {
-        guard let url = URL(string: "\(PensopayAPIBaseUrl)/payment/\(self.id)") else {
+        guard let url = URL(string: "\(PensopayAPIBaseUrl)/payments/\(self.id)") else {
             return
         }
         
