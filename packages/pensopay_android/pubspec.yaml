@@ -1,5 +1,5 @@
 name: pensopay_android
-description: A new Flutter plugin project.
+description: Flutter library for PensoPay.
 version: 0.0.1
 homepage: https://github.com/pensopay/flutter_pensopay
 repository: https://github.com/pensopay/flutter_pensopay
