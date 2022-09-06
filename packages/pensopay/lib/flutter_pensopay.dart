@@ -16,7 +16,15 @@ class Pensopay {
   }
 
   // Creates a new Pensopay Payment.
-  static Future<Payment> createPayment({required String currency, required String orderId, required int amount, required String facilitator, String? callbackUrl, bool autocapture = false, bool testmode = false, bool sheet = true}) async {
+  static Future<Payment> createPayment(
+      {required String currency,
+      required String orderId,
+      required int amount,
+      required String facilitator,
+      String? callbackUrl,
+      bool autocapture = false,
+      bool testmode = false,
+      bool sheet = true}) async {
     try {
       final result = await _channel.invokeMethod(
         'createPayment',
@@ -58,9 +66,7 @@ class Pensopay {
     try {
       final result = await _channel.invokeMethod(
         'getPayment',
-        <String, dynamic>{
-          'payment_id': paymentId
-        },
+        <String, dynamic>{'payment_id': paymentId},
       );
 
       return Payment.fromMap(result);
@@ -85,14 +91,12 @@ class Pensopay {
   }
 
   // Captures a Pensopay Payment.
-  static Future<Payment> capturePayment({required int paymentId, int? amount}) async {
+  static Future<Payment> capturePayment(
+      {required int paymentId, int? amount}) async {
     try {
       final result = await _channel.invokeMethod(
         'capturePayment',
-        <String, dynamic>{
-          'payment_id': paymentId,
-          'amount': amount
-        },
+        <String, dynamic>{'payment_id': paymentId, 'amount': amount},
       );
 
       return Payment.fromMap(result);
@@ -117,14 +121,12 @@ class Pensopay {
   }
 
   // Refunds a Pensopay Payment.
-  static Future<Payment> refundPayment({required int paymentId, int? amount}) async {
+  static Future<Payment> refundPayment(
+      {required int paymentId, int? amount}) async {
     try {
       final result = await _channel.invokeMethod(
         'refundPayment',
-        <String, dynamic>{
-          'payment_id': paymentId,
-          'amount': amount
-        },
+        <String, dynamic>{'payment_id': paymentId, 'amount': amount},
       );
 
       return Payment.fromMap(result);
@@ -153,9 +155,7 @@ class Pensopay {
     try {
       final result = await _channel.invokeMethod(
         'cancelPayment',
-        <String, dynamic>{
-          'payment_id': paymentId
-        },
+        <String, dynamic>{'payment_id': paymentId},
       );
 
       return Payment.fromMap(result);
@@ -184,9 +184,7 @@ class Pensopay {
     try {
       final result = await _channel.invokeMethod(
         'anonymizePayment',
-        <String, dynamic>{
-          'payment_id': paymentId
-        },
+        <String, dynamic>{'payment_id': paymentId},
       );
 
       return Payment.fromMap(result);
@@ -211,7 +209,12 @@ class Pensopay {
   }
 
   // Creates a new Pensopay Subscription.
-  static Future<Subscription> createSubscription({required String subscriptionId, required int amount, required String currency, required String description, String? callbackUrl}) async {
+  static Future<Subscription> createSubscription(
+      {required String subscriptionId,
+      required int amount,
+      required String currency,
+      required String description,
+      String? callbackUrl}) async {
     try {
       final result = await _channel.invokeMethod(
         'createSubscription',
@@ -308,7 +311,13 @@ class Pensopay {
   }
 
   // Updates a Pensopay Subscription.
-  static Future<Subscription> updateSubscription({required int id, String? subscriptionId, int? amount, String? currency, String? description, String? callbackUrl}) async {
+  static Future<Subscription> updateSubscription(
+      {required int id,
+      String? subscriptionId,
+      int? amount,
+      String? currency,
+      String? description,
+      String? callbackUrl}) async {
     try {
       final result = await _channel.invokeMethod(
         'updateSubscription',
@@ -344,7 +353,14 @@ class Pensopay {
   }
 
   // Creates a new Pensopay Subscription Payment.
-  static Future<Payment> createSubscriptionPayment({required int subscriptionId, required String currency, required String orderId, required int amount, String? callbackUrl, bool testmode = false,}) async {
+  static Future<Payment> createSubscriptionPayment({
+    required int subscriptionId,
+    required String currency,
+    required String orderId,
+    required int amount,
+    String? callbackUrl,
+    bool testmode = false,
+  }) async {
     try {
       final result = await _channel.invokeMethod(
         'recurringSubscription',
@@ -380,7 +396,10 @@ class Pensopay {
   }
 
   // Creates a Pensopay Mandate.
-  static Future<Mandate> createMandate({required int subscriptionId, required String mandateId, required String facilitator}) async {
+  static Future<Mandate> createMandate(
+      {required int subscriptionId,
+      required String mandateId,
+      required String facilitator}) async {
     try {
       final result = await _channel.invokeMethod(
         'createMandate',

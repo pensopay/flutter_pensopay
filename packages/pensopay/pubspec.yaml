@@ -1,6 +1,6 @@
 name: flutter_pensopay
 description: The official Flutter library for PensoPay Gateway (Payments & Subscriptions) [BETA]
-version: 0.0.2
+version: 0.0.3
 homepage: https://github.com/pensopay/flutter_pensopay
 repository: https://github.com/pensopay/flutter_pensopay
 
