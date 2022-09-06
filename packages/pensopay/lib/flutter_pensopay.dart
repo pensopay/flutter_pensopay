@@ -5,26 +5,26 @@ import 'package:flutter_pensopay/payment.dart';
 
 import 'subscription.dart';
 
-// Pensopay class and method declaration.
+/// Pensopay class and method declaration.
 class Pensopay {
-  // Pensopay MethodChannel.
+  /// Pensopay MethodChannel.
   static const MethodChannel _channel = MethodChannel('pensopay');
 
-  // Initializes the Pensopay client.
+  /// Initializes the Pensopay client.
   static Future<void> init({required String apiKey}) async {
     _channel.invokeMethod('init', {'api-key': apiKey});
   }
 
-  // Creates a new Pensopay Payment.
+  /// Creates a new Pensopay Payment.
   static Future<Payment> createPayment(
       {required String currency,
-      required String orderId,
-      required int amount,
-      required String facilitator,
-      String? callbackUrl,
-      bool autocapture = false,
-      bool testmode = false,
-      bool sheet = true}) async {
+        required String orderId,
+        required int amount,
+        required String facilitator,
+        String? callbackUrl,
+        bool autocapture = false,
+        bool testmode = false,
+        bool sheet = true}) async {
     try {
       final result = await _channel.invokeMethod(
         'createPayment',
@@ -61,7 +61,7 @@ class Pensopay {
     }
   }
 
-  // Fetches an existing Pensopay Payment.
+  /// Fetches an existing Pensopay Payment.
   static Future<Payment> getPayment({required int paymentId}) async {
     try {
       final result = await _channel.invokeMethod(
@@ -90,7 +90,7 @@ class Pensopay {
     }
   }
 
-  // Captures a Pensopay Payment.
+  /// Captures a Pensopay Payment.
   static Future<Payment> capturePayment(
       {required int paymentId, int? amount}) async {
     try {
@@ -120,7 +120,7 @@ class Pensopay {
     }
   }
 
-  // Refunds a Pensopay Payment.
+  /// Refunds a Pensopay Payment.
   static Future<Payment> refundPayment(
       {required int paymentId, int? amount}) async {
     try {
@@ -150,7 +150,7 @@ class Pensopay {
     }
   }
 
-  // Cancels a Pensopay Payment.
+  /// Cancels a Pensopay Payment.
   static Future<Payment> cancelPayment({required int paymentId}) async {
     try {
       final result = await _channel.invokeMethod(
@@ -179,7 +179,7 @@ class Pensopay {
     }
   }
 
-  // Anonymizes a Pensopay Payment.
+  /// Anonymizes a Pensopay Payment.
   static Future<Payment> anonymizePayment({required int paymentId}) async {
     try {
       final result = await _channel.invokeMethod(
@@ -208,13 +208,13 @@ class Pensopay {
     }
   }
 
-  // Creates a new Pensopay Subscription.
+  /// Creates a new Pensopay Subscription.
   static Future<Subscription> createSubscription(
       {required String subscriptionId,
-      required int amount,
-      required String currency,
-      required String description,
-      String? callbackUrl}) async {
+        required int amount,
+        required String currency,
+        required String description,
+        String? callbackUrl}) async {
     try {
       final result = await _channel.invokeMethod(
         'createSubscription',
@@ -248,7 +248,7 @@ class Pensopay {
     }
   }
 
-  // Fetches a Pensopay Subscription.
+  /// Fetches a Pensopay Subscription.
   static Future<Subscription> getSubscription({required int id}) async {
     try {
       final result = await _channel.invokeMethod(
@@ -279,7 +279,7 @@ class Pensopay {
     }
   }
 
-  // Cancels a Pensopay Subscription.
+  /// Cancels a Pensopay Subscription.
   static Future<Subscription> cancelSubscription({required int id}) async {
     try {
       final result = await _channel.invokeMethod(
@@ -310,14 +310,14 @@ class Pensopay {
     }
   }
 
-  // Updates a Pensopay Subscription.
+  /// Updates a Pensopay Subscription.
   static Future<Subscription> updateSubscription(
       {required int id,
-      String? subscriptionId,
-      int? amount,
-      String? currency,
-      String? description,
-      String? callbackUrl}) async {
+        String? subscriptionId,
+        int? amount,
+        String? currency,
+        String? description,
+        String? callbackUrl}) async {
     try {
       final result = await _channel.invokeMethod(
         'updateSubscription',
@@ -352,7 +352,7 @@ class Pensopay {
     }
   }
 
-  // Creates a new Pensopay Subscription Payment.
+  /// Creates a new Pensopay Subscription Payment.
   static Future<Payment> createSubscriptionPayment({
     required int subscriptionId,
     required String currency,
@@ -395,11 +395,11 @@ class Pensopay {
     }
   }
 
-  // Creates a Pensopay Mandate.
+  /// Creates a Pensopay Mandate.
   static Future<Mandate> createMandate(
       {required int subscriptionId,
-      required String mandateId,
-      required String facilitator}) async {
+        required String mandateId,
+        required String facilitator}) async {
     try {
       final result = await _channel.invokeMethod(
         'createMandate',

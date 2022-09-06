@@ -1,3 +1,7 @@
+## 0.0.4
+
+Added doc blocks
+
 ## 0.0.3
 
 Formatted files

@@ -45,7 +45,7 @@ class Payment {
     required this.updatedAt,
   });
 
-  // Mapping from map to Payment.
+  /// Mapping from map to Payment.
   factory Payment.fromMap(Map map) {
     return Payment(
       id: map['id'] as int,

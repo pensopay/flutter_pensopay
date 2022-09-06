@@ -1,3 +1,4 @@
+/// PensoPaySetupException
 class PensoPaySetupException implements Exception {
   final String message;
 
@@ -9,6 +10,7 @@ class PensoPaySetupException implements Exception {
   }
 }
 
+/// CreatePaymentException
 class CreatePaymentException implements Exception {
   final String message;
 
@@ -20,6 +22,7 @@ class CreatePaymentException implements Exception {
   }
 }
 
+/// CreatePaymentLinkException
 class CreatePaymentLinkException implements Exception {
   final String message;
 
@@ -31,6 +34,7 @@ class CreatePaymentLinkException implements Exception {
   }
 }
 
+/// ActivityException
 class ActivityException implements Exception {
   final String message;
 
@@ -42,6 +46,7 @@ class ActivityException implements Exception {
   }
 }
 
+/// ActivityFailureException
 class ActivityFailureException implements Exception {
   final String message;
 
@@ -53,6 +58,7 @@ class ActivityFailureException implements Exception {
   }
 }
 
+/// PaymentFailureException
 class PaymentFailureException implements Exception {
   final String message;
 

@@ -25,7 +25,7 @@ class Subscription {
     required this.updatedAt,
   });
 
-  // Mapping from map to Subscription.
+  /// Mapping from map to Subscription.
   factory Subscription.fromMap(Map map) {
     return Subscription(
       id: map['id'] as int,

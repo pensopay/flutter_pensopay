@@ -23,7 +23,7 @@ class Mandate {
     required this.updatedAt,
   });
 
-  // Mapping from map to Mandate.
+  /// Mapping from map to Mandate.
   factory Mandate.fromMap(Map map) {
     return Mandate(
       id: map['id'] as int,
