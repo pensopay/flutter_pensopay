@@ -1,6 +1,6 @@
 class Payment {
   final int id;
-  final String order_id;
+  final String orderId;
   final String type;
   final int amount;
   final int captured;
@@ -12,18 +12,18 @@ class Payment {
   final bool testmode;
   final bool autocapture;
   final String? link;
-  final String? callback_url;
-  final String success_url;
-  final String cancel_url;
+  final String? callbackUrl;
+  final String successUrl;
+  final String cancelUrl;
   final List<Order> order;
   final List<dynamic> variables;
-  final String expires_at;
-  final String created_at;
-  final String updated_at;
+  final String expiresAt;
+  final String createdAt;
+  final String updatedAt;
 
   Payment({
     required this.id,
-    required this.order_id,
+    required this.orderId,
     required this.type,
     required this.amount,
     required this.captured,
@@ -35,20 +35,21 @@ class Payment {
     required this.testmode,
     required this.autocapture,
     required this.link,
-    required this.callback_url,
-    required this.success_url,
-    required this.cancel_url,
+    required this.callbackUrl,
+    required this.successUrl,
+    required this.cancelUrl,
     required this.order,
     required this.variables,
-    required this.expires_at,
-    required this.created_at,
-    required this.updated_at,
+    required this.expiresAt,
+    required this.createdAt,
+    required this.updatedAt,
   });
 
+  // Mapping from map to Payment.
   factory Payment.fromMap(Map map) {
     return Payment(
       id: map['id'] as int,
-      order_id: map['order_id'] as String,
+      orderId: map['order_id'] as String,
       type: map['type'] as String,
       amount: map['amount'] as int,
       captured: map['captured'] as int,
@@ -60,16 +61,16 @@ class Payment {
       testmode: map['testmode'] as bool,
       autocapture: map['autocapture'] as bool,
       link: map['link'] as String?,
-      callback_url: map['callback_url'] as String?,
-      success_url: map['success_url'] as String,
-      cancel_url: map['cancel_url'] as String,
+      callbackUrl: map['callback_url'] as String?,
+      successUrl: map['success_url'] as String,
+      cancelUrl: map['cancel_url'] as String,
       order: (map['order'] as List<dynamic>)
           .map((entry) => Order.fromMap(entry))
           .toList(),
       variables: map['variables'] as List<dynamic>,
-      expires_at: map['expires_at'] as String,
-      created_at: map['created_at'] as String,
-      updated_at: map['updated_at'] as String,
+      expiresAt: map['expires_at'] as String,
+      createdAt: map['created_at'] as String,
+      updatedAt: map['updated_at'] as String,
     );
   }
 }
@@ -93,14 +94,6 @@ class Order {
   }
 }
 
-//* @bodyParam order.billing_address.name string
-//* @bodyParam order.billing_address.address string
-//* @bodyParam order.billing_address.zipcode string
-//* @bodyParam order.billing_address.city string
-//* @bodyParam order.billing_address.country string
-//* @bodyParam order.billing_address.email string
-//* @bodyParam order.billing_address.phone_number string
-//* @bodyParam order.billing_address.mobile_number string
 class BillingAddress {
   final String? name;
   final String? address;
@@ -133,14 +126,6 @@ class BillingAddress {
   }
 }
 
-//* @bodyParam order.shipping_address.name string
-//* @bodyParam order.shipping_address.address string
-//* @bodyParam order.shipping_address.zipcode string
-//* @bodyParam order.shipping_address.city string
-//* @bodyParam order.shipping_address.country string
-//* @bodyParam order.shipping_address.email string
-//* @bodyParam order.shipping_address.phone_number string
-//* @bodyParam order.shipping_address.mobile_number string
 class ShippingAddress {
   final String? name;
   final String? address;
@@ -173,11 +158,6 @@ class ShippingAddress {
   }
 }
 
-//* @bodyParam order.basket.qty integer
-//* @bodyParam order.basket.sku string
-//* @bodyParam order.basket.vat float
-//* @bodyParam order.basket.name string
-//* @bodyParam order.basket.price integer price in cents
 class Basket {
   final int qty;
   final String sku;
@@ -204,10 +184,6 @@ class Basket {
   }
 }
 
-//* @bodyParam order.shipping.amount integer
-//* @bodyParam order.shipping.method string
-//* @bodyParam order.shipping.company string
-//* @bodyParam order.shipping.vat_rate float
 class Shipping {
   final int amount;
   final String method;
