@@ -1,6 +1,6 @@
 ## 0.0.4
 
-Added doc blocks
+Added doc blocks and corrected order of CHANGELOG.
 
 ## 0.0.3
 
