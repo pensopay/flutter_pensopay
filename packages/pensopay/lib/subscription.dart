@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+/// Subscription class. This class includes all Subscription entries.
 class Subscription {
   final int id;
   final String subscriptionId;

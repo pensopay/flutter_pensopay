@@ -1,3 +1,7 @@
+## 0.0.5
+
+Formattet again. Added more doc blocks.
+
 ## 0.0.4
 
 Added doc blocks and corrected order of CHANGELOG.

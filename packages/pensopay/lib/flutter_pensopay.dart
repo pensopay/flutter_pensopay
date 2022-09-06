@@ -18,13 +18,13 @@ class Pensopay {
   /// Creates a new Pensopay Payment.
   static Future<Payment> createPayment(
       {required String currency,
-        required String orderId,
-        required int amount,
-        required String facilitator,
-        String? callbackUrl,
-        bool autocapture = false,
-        bool testmode = false,
-        bool sheet = true}) async {
+      required String orderId,
+      required int amount,
+      required String facilitator,
+      String? callbackUrl,
+      bool autocapture = false,
+      bool testmode = false,
+      bool sheet = true}) async {
     try {
       final result = await _channel.invokeMethod(
         'createPayment',
@@ -211,10 +211,10 @@ class Pensopay {
   /// Creates a new Pensopay Subscription.
   static Future<Subscription> createSubscription(
       {required String subscriptionId,
-        required int amount,
-        required String currency,
-        required String description,
-        String? callbackUrl}) async {
+      required int amount,
+      required String currency,
+      required String description,
+      String? callbackUrl}) async {
     try {
       final result = await _channel.invokeMethod(
         'createSubscription',
@@ -313,11 +313,11 @@ class Pensopay {
   /// Updates a Pensopay Subscription.
   static Future<Subscription> updateSubscription(
       {required int id,
-        String? subscriptionId,
-        int? amount,
-        String? currency,
-        String? description,
-        String? callbackUrl}) async {
+      String? subscriptionId,
+      int? amount,
+      String? currency,
+      String? description,
+      String? callbackUrl}) async {
     try {
       final result = await _channel.invokeMethod(
         'updateSubscription',
@@ -398,8 +398,8 @@ class Pensopay {
   /// Creates a Pensopay Mandate.
   static Future<Mandate> createMandate(
       {required int subscriptionId,
-        required String mandateId,
-        required String facilitator}) async {
+      required String mandateId,
+      required String facilitator}) async {
     try {
       final result = await _channel.invokeMethod(
         'createMandate',

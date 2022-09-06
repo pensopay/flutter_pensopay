@@ -1,3 +1,4 @@
+/// Mandate class. This class includes all Mandate entries.
 class Mandate {
   final int id;
   final int subscriptionId;

@@ -1,3 +1,4 @@
+/// Payment class. This class includes all Payment entries.
 class Payment {
   final int id;
   final String orderId;
@@ -75,6 +76,7 @@ class Payment {
   }
 }
 
+/// Order class. This class includes all Order entries.
 class Order {
   final BillingAddress? billingAddress;
   final ShippingAddress? shippingAddress;
@@ -84,6 +86,7 @@ class Order {
   Order(
       {this.billingAddress, this.shippingAddress, this.basket, this.shipping});
 
+  /// Mapping: Map -> Order.
   factory Order.fromMap(Map map) {
     return Order(
       billingAddress: map['billing_address'] as BillingAddress?,
@@ -94,6 +97,7 @@ class Order {
   }
 }
 
+/// BillingAddress class. This class includes all BillingAddress entries.
 class BillingAddress {
   final String? name;
   final String? address;
@@ -113,6 +117,7 @@ class BillingAddress {
     this.mobileNumber,
   });
 
+  /// Mapping: Map -> BillingAddress.
   factory BillingAddress.fromMap(Map map) {
     return BillingAddress(
       name: map['name'] as String?,
@@ -126,6 +131,7 @@ class BillingAddress {
   }
 }
 
+/// ShippingAddress class. This class includes all ShippingAddress entries.
 class ShippingAddress {
   final String? name;
   final String? address;
@@ -145,6 +151,7 @@ class ShippingAddress {
     this.mobileNumber,
   });
 
+  /// Mapping: Map -> ShippingAddress.
   factory ShippingAddress.fromMap(Map map) {
     return ShippingAddress(
       name: map['name'] as String?,
@@ -158,6 +165,7 @@ class ShippingAddress {
   }
 }
 
+/// Basket class. This class includes all Basket entries.
 class Basket {
   final int qty;
   final String sku;
@@ -173,6 +181,7 @@ class Basket {
     required this.price,
   });
 
+  /// Mapping: Map -> Basket.
   factory Basket.fromMap(Map map) {
     return Basket(
       qty: map['qty'] as int,
@@ -184,6 +193,7 @@ class Basket {
   }
 }
 
+/// Shipping class. This class includes all Shipping entries.
 class Shipping {
   final int amount;
   final String method;
@@ -197,6 +207,7 @@ class Shipping {
     required this.vatRate,
   });
 
+  /// Mapping: Map -> Shipping.
   factory Shipping.fromMap(Map map) {
     return Shipping(
       amount: map['amount'] as int,
